@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h1 class="text-center mt-3">Login</h1>
+
+<form method="post" class="w-50 mx-auto ml-5 mr-5 mb-5 d-flex gap-3 flex-column">
+	{% csrf_token %}
+	<input type="hidden" name="text" value="{{ enxt }}"/>
+	<div class="form-error">{{ form.non_field_errors.as_text }}</div>
+	{% for f in form %}
+		<div class="form-group">
+			<label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+			{{ f }}
+			<div class="form-error">{{ f.errors }}</div>
+		</div>
+	{% endfor %}
+	<p><button type="submit" class="btn btn-primary">Login</button></p>
+
+	{% comment %} <p><a href="{% url 'users:password_reset' %}">Forget password?</a></p> {% endcomment %}
+</form>
+{% comment %} <p><a href="{% url 'social:begin' 'github' %}"><img src="/media/social-auth/github.png"></a></p> {% endcomment %}
+{% endblock %}

@@ -12,9 +12,9 @@ CRM using Django Framework
 	- [x] About page
 - [ ] Authentication
 	- [x] Model for user profiles
-	- [ ] Signup
-	- [ ] Login
-	- [ ] Logout
+	- [x] Register
+	- [x] Login
+	- [x] Logout
 	- [ ] OAuth login
 - [ ] Dashboard
 - [ ] Create new leads
