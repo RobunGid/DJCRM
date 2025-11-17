@@ -4,12 +4,12 @@ CRM using Django Framework
 
 ## Todolist
 
-- [ ] Setup environment
-- [ ] Base pages (Templates)
+- [x] Setup environment
+- [x] Base pages (Templates)
 	- [x] App for pages
 	- [x] Base template
-	- [ ] Main page
-	- [ ] About page
+	- [x] Main page
+	- [x] About page
 - [ ] Authentication
 - [ ] Dashboard
 - [ ] Create new leads
