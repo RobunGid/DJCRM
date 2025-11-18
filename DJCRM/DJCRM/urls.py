@@ -24,5 +24,6 @@ urlpatterns = [
 	path('about/', views.about, name='about'),
 	path('users/', include('users.urls', namespace='users')),
 	path('dashboard/', include('dashboard.urls', namespace='dashboard')),
+	path('dashboard/leads/', include('leads.urls', namespace='leads')),
     path('admin/', admin.site.urls),
 ]
