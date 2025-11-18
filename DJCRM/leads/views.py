@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 
 from leads.models import Lead
 from leads.forms import AddLeadForm
@@ -18,3 +18,12 @@ class AddLeadPage(DataMixin, LoginRequiredMixin, CreateView):
         lead = form.save(commit=False)
         lead.created_by = self.request.user
         return super().form_valid(form)
+    
+class LeadListPage(DataMixin, LoginRequiredMixin, ListView):
+    template_name = "leads/leads_list.html"
+    title = "Leads"
+    context_object_name = "leads"
+    paginate_by = 10
+    
+    def get_queryset(self):
+        return Lead.objects.all()
