@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 
 from leads.models import Lead
 from leads.forms import AddLeadForm
@@ -20,10 +21,14 @@ class AddLeadPage(DataMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
 class LeadListPage(DataMixin, LoginRequiredMixin, ListView):
-    template_name = "leads/leads_list.html"
+    template_name = "leads/lead_list.html"
     title = "Leads"
     context_object_name = "leads"
     paginate_by = 10
     
     def get_queryset(self):
         return Lead.objects.all()
+    
+class LeadDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
+    model = Lead
+    template_name = "leads/lead_details.html"

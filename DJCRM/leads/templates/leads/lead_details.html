@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Lead Details - ID: #{{ lead.pk }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ lead.name }}</h5>
+            <p class="card-text"><strong>Email:</strong> {{ lead.email }}</p>
+            <p class="card-text"><strong>Description:</strong> {{ lead.description|default:"No description" }}</p>
+            <p class="card-text">
+                <strong>Priority:</strong> 
+                <span class="badge 
+                    {% if lead.priority == lead.Priority.LOW %}bg-secondary
+                    {% elif lead.priority == lead.Priority.MEDIUM %}bg-warning
+                    {% elif lead.priority == lead.Priority.HIGH %}bg-danger
+                    {% endif %}
+                ">{{ lead.get_priority_display }}</span>
+            </p>
+            <p class="card-text">
+                <strong>Status:</strong> 
+                <span class="badge 
+                    {% if lead.status == lead.Status.NEW %}bg-primary
+                    {% elif lead.status == lead.Status.CONTACTED %}bg-info
+                    {% elif lead.status == lead.Status.WON %}bg-success
+                    {% elif lead.status == lead.Status.LOST %}bg-dark
+                    {% endif %}
+                ">{{ lead.get_status_display }}</span>
+            </p>
+            <p class="card-text"><strong>Created By:</strong> {{ lead.created_by.username }}</p>
+            <p class="card-text"><strong>Created At:</strong> {{ lead.created_at }}</p>
+            <p class="card-text"><strong>Updated At:</strong> {{ lead.updated_at }}</p>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'leads:lead_list' %}" class="btn btn-secondary">Back to Leads</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

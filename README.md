@@ -16,13 +16,13 @@ CRM using Django Framework
 	- [x] Login
 	- [x] Logout
 	- [ ] OAuth login
-- [ ] Dashboard
-- [ ] Create new leads
+- [x] Dashboard
+- [x] Create new leads
 	- [x] App
 	- [x] DB Models
 	- [x] Views & Forms for leads
-	- [ ] List leads
-	- [ ] Detail leads
+	- [x] List leads
+	- [x] Detail leads
 - [ ] CRUD with leads
 - [ ] Convert leads to clients
 - [ ] CRUD with clients
