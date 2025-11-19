@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from django_enum import EnumField
 
 # Create your models here.
@@ -26,3 +27,7 @@ class Lead(models.Model):
     
     def __str__(self):
         return f'{self.pk}: {self.name}'
+    
+    def get_absolute_url(self):
+        return reverse("leads:lead_details", kwargs={"pk": self.pk})
+    

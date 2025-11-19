@@ -1,10 +1,10 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-4" style="max-width: 800px;">
     <div class="card">
         <div class="card-header bg-primary text-white">
-            Lead Details - ID: #{{ lead.pk }}
+            {{ header_title }}
         </div>
         <div class="card-body">
             <h5 class="card-title">{{ lead.name }}</h5>
@@ -35,6 +35,8 @@
         </div>
         <div class="card-footer text-end">
             <a href="{% url 'leads:lead_list' %}" class="btn btn-secondary">Back to Leads</a>
+            <a href="{% url 'leads:lead_update' lead.pk %}" class="btn btn-info">Update Lead info</a>
+            <a href="{% url 'leads:lead_delete' lead.pk %}" class="btn btn-danger">Delete Lead</a>
         </div>
     </div>
 </div>
