@@ -17,15 +17,23 @@ CRM using Django Framework
 	- [x] Logout
 	- [ ] OAuth login
 - [x] Dashboard
-- [x] Create new leads
+- [x] CRUD with leads
 	- [x] App
 	- [x] DB Models
 	- [x] Views & Forms for leads
+	- [x] Create lead
+	- [x] Update lead
 	- [x] List leads
 	- [x] Detail leads
-- [ ] CRUD with leads
-- [ ] Convert leads to clients
-- [ ] CRUD with clients
+- [x] CRUD with clients
+	- [x] App
+	- [x] DB Models
+	- [x] List clients
+	- [x] Detail clients
+	- [x] Delete client
+	- [x] Update client
+	- [x] Create client
+- [x] Convert leads to clients
 - [ ] Implement solutions for teams
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Deploy

@@ -35,7 +35,8 @@
         </div>
         <div class="card-footer text-end">
             <a href="{% url 'leads:lead_list' %}" class="btn btn-secondary">Back to Leads</a>
-            <a href="{% url 'leads:lead_update' lead.pk %}" class="btn btn-info">Update Lead info</a>
+            <a href="{% url 'leads:lead_convert_to_client' lead.pk %}" class="btn btn-info">Convert to Client</a>
+            <a href="{% url 'leads:lead_update' lead.pk %}" class="btn btn-warning">Edit Lead</a>
             <a href="{% url 'leads:lead_delete' lead.pk %}" class="btn btn-danger">Delete Lead</a>
         </div>
     </div>

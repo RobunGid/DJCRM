@@ -1,17 +1,20 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, DetailView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView, DetailView, TemplateView, UpdateView
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
 from leads.models import Lead
 from leads.forms import AddLeadForm
-from leads.utils import DataMixin
+from core.utils import DataMixin
 
-# Create your views here.
+from clients.models import Client
+
 class AddLeadPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView):
     form_class = AddLeadForm
     model = Lead
-    template_name = "leads/add_lead.html"
+    template_name = "leads/lead_add.html"
     title = None
     success_url = reverse_lazy("leads:lead_list")
     extra_context = {"button_text": "Create"}
@@ -19,7 +22,7 @@ class AddLeadPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["header_title"] = "Create Lead"
+        context["header_title"] = "Add Lead"
         
         return context
     def form_valid(self, form):
@@ -31,15 +34,15 @@ class LeadListPage(DataMixin, LoginRequiredMixin, ListView):
     template_name = "leads/lead_list.html"
     title = "Leads"
     context_object_name = "leads"
-    paginate_by = 10
     
     def get_queryset(self):
-        return Lead.objects.all()
+        return Lead.not_clients.all()
     
 class LeadDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
     model = Lead
     template_name = "leads/lead_details.html"
     title = None
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Lead Details - ID #{self.object.pk}"
@@ -47,11 +50,12 @@ class LeadDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
     
 class LeadUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateView):
     model = Lead
-    template_name = "leads/add_lead.html"
+    template_name = "leads/lead_add.html"
     form_class = AddLeadForm
     extra_context = {"button_text": "Update"}
     title = None
     success_message = "Lead was updated successfully"
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Edit Lead - ID #{self.object.pk}"
@@ -62,7 +66,28 @@ class LeadDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteV
     success_url = reverse_lazy("leads:lead_list")
     success_message = "Lead was deleted successfully"
     title = None
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Delete Lead - ID #{self.object.pk}"
         return context
+    
+class LeadConvertToClient(LoginRequiredMixin, DataMixin, TemplateView):
+    template_name = "leads/lead_convert_to_client.html"
+    success_message = "Lead was converted to client successfully"
+    
+    def post(self, request, *args, **kwargs):
+        lead = get_object_or_404(Lead, pk=kwargs["pk"])
+        
+        client = Client.objects.create(
+            name=lead.name,
+            email=lead.email,
+            description=lead.description,
+            created_by=request.user
+        )
+        lead.converted_to_client = True
+        lead.client = client
+        client.save()
+        lead.save()  
+        messages.success(request, self.success_message)
+        return redirect("leads:lead_list")

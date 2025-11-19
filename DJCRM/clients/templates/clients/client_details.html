@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px;">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            {{ header_title }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ client.name }}</h5>
+            <p class="card-text"><strong>Email:</strong> {{ client.email }}</p>
+            <p class="card-text"><strong>Description:</strong> {{ client.description|default:"No description" }}</p>
+            <p class="card-text"><strong>Created By:</strong> {{ client.created_by.username }}</p>
+            <p class="card-text"><strong>Created At:</strong> {{ client.created_at }}</p>
+            <p class="card-text"><strong>Updated At:</strong> {{ client.updated_at }}</p>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'clients:client_list' %}" class="btn btn-secondary">Back to Clients</a>
+            <a href="{% url 'clients:client_update' client.pk %}" class="btn btn-info">Edit Client</a>
+            <a href="{% url 'clients:client_delete' client.pk %}" class="btn btn-danger">Delete Client</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

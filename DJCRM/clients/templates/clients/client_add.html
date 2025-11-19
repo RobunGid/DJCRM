@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card mx-auto" style="max-width: 800px;">
+        <div class="card-header bg-primary text-white">
+            {{ header_title }}
+        </div>
+        <div class="card-body">
+            <form action="" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3">
+                {% csrf_token %}
+                <input type="hidden" name="text" value="{{ enxt }}">
+                <div>{{ form.non_field_errors }}</div>
+                {% for f in form %}
+                    <div>
+                        <label for="{{ f.id_for_label }}" class="form-label">{{ f.label }}</label>
+                        {{ f }}
+                        <div class="text-danger small">{{ f.errors }}</div>
+                    </div>
+                {% endfor %}
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">{{ button_text }}</button>
+                    <a href="{% url 'clients:client_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
 class DataMixin:
     title = None
     extra_context = {}
+    paginate_by = 10
     def __init__(self):
         if self.title:
             self.extra_context["title"] = self.title

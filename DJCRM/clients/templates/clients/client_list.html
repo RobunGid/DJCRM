@@ -1,0 +1,43 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container table-responsive my-2">
+	{% if clients|length > 0 %}
+	<table class="table table-dark table-hover table-striped table-bordered align-middle">
+		<thead class="table-dark">
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Description</th>
+				<th>Created By</th>
+				<th>Created At</th>
+				<th>Updated At</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for client in clients %}
+			<tr class="position-relative">
+				<td>
+					<a href="{% url 'clients:client_details' client.pk %}" class="stretched-link" title="{{ client.description }}"></a>
+					{{ client.pk }}
+				</td>
+				<td>{{ client.name }}</td>
+				<td>{{ client.email }}</td>
+				<td>{{ client.description|truncatewords:10 }}</td>
+				<td>{{ client.created_by.username }}</td>
+				<td>{{ client.created_at }}</td>
+				<td>{{ client.updated_at }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+		<p>No clients available. You can <a class="icon-link gap-0" href="{% url 'leads:lead_list' %}">
+			convert Lead to Client
+		<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.2rem" width="1.2rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M6 6v2h8.59L5 17.59 6.41 19 16 9.41V18h2V6z"></path></svg>
+		</a> to get started</p>
+	{% endif %}
+</div>
+
+{% endblock %}
