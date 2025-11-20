@@ -21,7 +21,7 @@ class ClientListPage(DataMixin, LoginRequiredMixin, ListView):
 class ClientDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
     model = Client
     template_name = "clients/client_details.html"
-    title = None
+    title = "Client Details"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,7 +32,7 @@ class ClientDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, Delet
     model = Client
     success_url = reverse_lazy("clients:client_list")
     success_message = "Client was deleted successfully"
-    title = None
+    title = "Delete Client"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -50,7 +50,7 @@ class ClientAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateVi
     form_class = AddClientForm
     model = Client
     template_name = "clients/client_add.html"
-    title = None
+    title = "Add Client"
     success_url = reverse_lazy("clients:client_list")
     extra_context = {"button_text": "Create"}
     success_message = "Client was created successfully"
@@ -71,7 +71,7 @@ class ClientUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, Updat
     template_name = "clients/client_add.html"
     form_class = AddClientForm
     extra_context = {"button_text": "Update"}
-    title = None
+    title = "Update Client"
     success_message = "Client was updated successfully"
     
     def get_context_data(self, **kwargs):

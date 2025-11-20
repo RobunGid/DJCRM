@@ -15,7 +15,7 @@ class LeadAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView
     form_class = AddLeadForm
     model = Lead
     template_name = "leads/lead_add.html"
-    title = None
+    title = "Add Lead"
     success_url = reverse_lazy("leads:lead_list")
     extra_context = {"button_text": "Create"}
     success_message = "Lead was created successfully"
@@ -54,7 +54,7 @@ class LeadUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateV
     template_name = "leads/lead_add.html"
     form_class = AddLeadForm
     extra_context = {"button_text": "Update"}
-    title = None
+    title = "Update Lead"
     success_message = "Lead was updated successfully"
     
     def get_context_data(self, **kwargs):
@@ -66,16 +66,17 @@ class LeadDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteV
     model = Lead
     success_url = reverse_lazy("leads:lead_list")
     success_message = "Lead was deleted successfully"
-    title = None
+    title = "Delete Lead"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Delete Lead - ID #{self.object.pk}"
         return context
     
-class LeadConvertToClient(LoginRequiredMixin, DataMixin, TemplateView):
+class LeadConvertToClientPage(LoginRequiredMixin, DataMixin, TemplateView):
     template_name = "leads/lead_convert_to_client.html"
     success_message = "Lead was converted to client successfully"
+    title = "Convert Lead to Client"
     
     def post(self, request, *args, **kwargs):
         lead = get_object_or_404(Lead, pk=kwargs["pk"])

@@ -10,5 +10,5 @@ urlpatterns = [
     path("lead-details/<int:pk>/", views.LeadDetailsPage.as_view(), name="lead_details"),
     path("lead-update/<int:pk>/", views.LeadUpdatePage.as_view(), name="lead_update"),
     path("lead-delete/<int:pk>/", views.LeadDeletePage.as_view(), name="lead_delete"),
-    path("lead-convert/<int:pk>/", views.LeadConvertToClient.as_view(), name="lead_convert_to_client"),
+    path("lead-convert/<int:pk>/", views.LeadConvertToClientPage.as_view(), name="lead_convert_to_client"),
 ]
