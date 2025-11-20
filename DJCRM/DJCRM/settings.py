@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'dashboard',
     'leads',
     'clients',
+    'teams',
     "unfold",  # before django.contrib.admin
     "unfold.contrib.filters",  # optional, if special filters are needed
     "unfold.contrib.forms",  # optional, if special form elements are needed

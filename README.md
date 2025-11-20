@@ -36,8 +36,8 @@ CRM using Django Framework
 - [x] Convert leads to clients
 - [x] Upgrade admin
 - [ ] Implement solutions for teams
-	- [ ] App
-	- [ ] DB Models
+	- [x] App
+	- [x] DB Models
 	- [ ] Create team
 	- [ ] Checking member of team
 - [ ] Implement a payment solution / Monthly recurring payments

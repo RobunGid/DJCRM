@@ -4,6 +4,7 @@ from django.urls import reverse
 from django_enum import EnumField
 
 from clients.models import Client
+from teams.models import Team
 
 class NotClientsManager(models.Manager):
     def get_queryset(self):
@@ -33,6 +34,7 @@ class Lead(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     client = models.OneToOneField(Client, on_delete=models.SET_NULL, null=True, blank=True)
+    team = models.ForeignKey(Team, related_name="leads", on_delete=models.CASCADE)
     
     objects = models.Manager()
     not_clients = NotClientsManager()

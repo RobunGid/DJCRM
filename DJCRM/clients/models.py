@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+from teams.models import Team
+
 User = get_user_model()
 
 class Client(models.Model):
@@ -11,6 +13,7 @@ class Client(models.Model):
     created_by = models.ForeignKey(User, related_name="clients", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    team = models.ForeignKey(Team, related_name="clients", on_delete=models.CASCADE)
     
     def __str__(self):
         return f'{self.pk}: {self.name}'
