@@ -10,6 +10,7 @@
             <h5 class="card-title">{{ lead.name }}</h5>
             <p class="card-text"><strong>Email:</strong> {{ lead.email }}</p>
             <p class="card-text"><strong>Description:</strong> {{ lead.description|default:"No description" }}</p>
+            <p class="card-text"><strong>Team:</strong> {{ lead.team.name }}</p>
             <p class="card-text">
                 <strong>Priority:</strong> 
                 <span class="badge 

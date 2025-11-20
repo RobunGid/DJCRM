@@ -5,13 +5,13 @@ from django.views.generic import CreateView, DeleteView, ListView, DetailView, T
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
+from core.utils import DataMixin
 from leads.models import Lead
 from leads.forms import AddLeadForm
-from core.utils import DataMixin
-
 from clients.models import Client
+from teams.models import Team
 
-class AddLeadPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView):
+class LeadAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView):
     form_class = AddLeadForm
     model = Lead
     template_name = "leads/lead_add.html"
@@ -28,6 +28,7 @@ class AddLeadPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView
     def form_valid(self, form):
         lead = form.save(commit=False)
         lead.created_by = self.request.user
+        lead.team = Team.objects.filter(created_by=self.request.user).first()
         return super().form_valid(form)
     
 class LeadListPage(DataMixin, LoginRequiredMixin, ListView):
@@ -78,13 +79,16 @@ class LeadConvertToClient(LoginRequiredMixin, DataMixin, TemplateView):
     
     def post(self, request, *args, **kwargs):
         lead = get_object_or_404(Lead, pk=kwargs["pk"])
+        team = Team.objects.filter(created_by=request.user).first()
         
         client = Client.objects.create(
             name=lead.name,
             email=lead.email,
             description=lead.description,
-            created_by=request.user
+            created_by=request.user,
+            team=team
         )
+        
         lead.converted_to_client = True
         lead.client = client
         client.save()

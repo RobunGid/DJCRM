@@ -15,6 +15,9 @@ class Client(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     team = models.ForeignKey(Team, related_name="clients", on_delete=models.CASCADE)
     
+    class Meta:
+        ordering = ("name",)
+    
     def __str__(self):
         return f'{self.pk}: {self.name}'
     

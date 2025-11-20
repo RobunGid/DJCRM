@@ -39,6 +39,9 @@ class Lead(models.Model):
     objects = models.Manager()
     not_clients = NotClientsManager()
     
+    class Meta:
+        ordering = ("name",)
+    
     def __str__(self):
         return f'{self.pk}: {self.name}'
     

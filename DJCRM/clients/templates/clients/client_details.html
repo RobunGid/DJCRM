@@ -10,6 +10,7 @@
             <h5 class="card-title">{{ client.name }}</h5>
             <p class="card-text"><strong>Email:</strong> {{ client.email }}</p>
             <p class="card-text"><strong>Description:</strong> {{ client.description|default:"No description" }}</p>
+            <p class="card-text"><strong>Team:</strong> {{ client.team.name }}</p>
             <p class="card-text"><strong>Created By:</strong> {{ client.created_by.username }}</p>
             <p class="card-text"><strong>Created At:</strong> {{ client.created_at }}</p>
             <p class="card-text"><strong>Updated At:</strong> {{ client.updated_at }}</p>

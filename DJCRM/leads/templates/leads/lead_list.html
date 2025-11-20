@@ -10,6 +10,7 @@
 				<th>Name</th>
 				<th>Email</th>
 				<th>Description</th>
+				<th>Team</th>
 				<th>Priority</th>
 				<th>Status</th>
 				<th>Created By</th>
@@ -27,6 +28,7 @@
 				<td>{{ lead.name }}</td>
 				<td>{{ lead.email }}</td>
 				<td>{{ lead.description|truncatewords:10 }}</td>
+				<td>{{ lead.team.name }}</td>
 				<td>
 					<span class="badge border
 						{% if lead.priority == lead.Priority.LOW %}bg-secondary

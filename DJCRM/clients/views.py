@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from core.utils import DataMixin
 from clients.models import Client
 from clients.forms import AddClientForm
+from teams.models import Team
 
 # Create your views here.
 class ClientListPage(DataMixin, LoginRequiredMixin, ListView):
@@ -41,8 +42,8 @@ class ClientDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, Delet
     def post(self, request, *args, **kwargs):
         client = get_object_or_404(Client, pk=kwargs["pk"])
         if client.has_lead():
-        	client.lead.converted_to_client = False
-        	client.lead.save()
+            client.lead.converted_to_client = False
+            client.lead.save()
         return super().post(request, *args, **kwargs)
     
 class ClientAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView):
@@ -62,6 +63,7 @@ class ClientAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateVi
     def form_valid(self, form):
         client = form.save(commit=False)
         client.created_by = self.request.user
+        client.team = Team.objects.filter(created_by=self.request.user).first()
         return super().form_valid(form)
     
 class ClientUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateView):
