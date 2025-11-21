@@ -58,6 +58,7 @@ class ClientAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateVi
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = "Add Client"
+        context["allow_to_add"] = self.request.user.teams.first().clients.all().count() < self.request.user.teams.first().plan.max_clients
         return context
     
     def form_valid(self, form):
@@ -77,4 +78,5 @@ class ClientUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, Updat
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Edit Client - ID #{self.object.pk}"
+        context["allow_to_add"] = True
         return context

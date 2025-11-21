@@ -7,7 +7,7 @@
             {{ header_title }}
         </div>
         <div class="card-body">
-			{% if request.user.teams.first.clients.all|length < request.user.teams.first.plan.max_clients %}
+			{% if allow_to_add %}
             <form action="" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3">
                 {% csrf_token %}
                 <input type="hidden" name="text" value="{{ enxt }}">

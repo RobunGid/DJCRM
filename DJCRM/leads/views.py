@@ -23,6 +23,7 @@ class LeadAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = "Add Lead"
+        context["allow_to_add"] = self.request.user.teams.first().leads.all().count() < self.request.user.teams.first().plan.max_leads
         
         return context
     def form_valid(self, form):
@@ -60,6 +61,7 @@ class LeadUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateV
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Edit Lead - ID #{self.object.pk}"
+        context["allow_to_add"] = True
         return context
     
 class LeadDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
