@@ -1,6 +1,6 @@
 from django import forms
 
-from leads.models import Lead
+from leads.models import Lead, LeadComment
 
 class AddLeadForm(forms.ModelForm):
     class Meta:
@@ -12,4 +12,12 @@ class AddLeadForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"class": "form-control", "placeholder": "Enter lead description"}),
             "priority": forms.Select(attrs={"class": "form-select"}),
             "status": forms.Select(attrs={"class": "form-select"}),
+		}
+        
+class AddLeadCommentForm(forms.ModelForm):
+    class Meta:
+        model = LeadComment
+        fields = ("content",)
+        widgets = {
+            "content": forms.Textarea(attrs={"class": "form-control", "placeholder": "Enter comment content", "style": "resize: none;"}),
 		}

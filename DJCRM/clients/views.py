@@ -1,15 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView, View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from core.utils import DataMixin
 from clients.models import Client
-from clients.forms import AddClientForm
+from clients.forms import AddClientForm, AddClientCommentForm
 from teams.models import Team
 
-# Create your views here.
 class ClientListPage(DataMixin, LoginRequiredMixin, ListView):
     template_name = "clients/client_list.html"
     title = "Clients"
@@ -26,6 +25,7 @@ class ClientDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Client Details - ID #{self.object.pk}"
+        context["add_comment_form"] = AddClientCommentForm
         return context
 
 class ClientDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
@@ -80,3 +80,19 @@ class ClientUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, Updat
         context["header_title"] = f"Edit Client - ID #{self.object.pk}"
         context["allow_to_add"] = True
         return context
+    
+class ClientCommentAddView(View):
+    def post(self, request, *args, **kwargs):
+        form = AddClientCommentForm(request.POST)
+        
+        if form.is_valid():
+            pk = kwargs.get("pk")
+            
+            team = Team.objects.filter(created_by=request.user).first()
+            comment = form.save(commit=False)
+            comment.team = team
+            comment.created_by = request.user
+            comment.client_id = pk
+            comment.save()
+    
+        return redirect("clients:client_details", pk=pk)

@@ -48,3 +48,12 @@ class Lead(models.Model):
     def get_absolute_url(self):
         return reverse("leads:lead_details", kwargs={"pk": self.pk})
     
+class LeadComment(models.Model):
+    content = models.TextField(blank=True, null=True)
+    
+    team = models.ForeignKey(Team, related_name="lead_comments", on_delete=models.CASCADE)
+    lead = models.ForeignKey(Lead, related_name="comments", on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, related_name="lead_comments", on_delete=models.CASCADE)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

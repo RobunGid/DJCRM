@@ -10,4 +10,5 @@ urlpatterns = [
 	path("client-delete/<int:pk>/", views.ClientDeletePage.as_view(), name="client_delete"),
 	path("client-update/<int:pk>/", views.ClientUpdatePage.as_view(), name="client_update"),
 	path("client-add/", views.ClientAddPage.as_view(), name="client_add"),
+    path("client-add-comment/<int:pk>/", views.ClientCommentAddView.as_view(), name="client_add_comment"),
 ]
