@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, DetailView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 
@@ -20,3 +20,8 @@ class TeamUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateV
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Edit Team - ID #{self.object.pk}"
         return context
+    
+class TeamDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
+    model = Team
+    template_name = "teams/team_details.html"
+    title = None
