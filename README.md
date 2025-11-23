@@ -43,7 +43,7 @@ CRM using Django Framework
 	- [x] Edit owned teams
 	- [x] Limits
 - [x] Comments and simillar to leads and clients
+- [x] Upload files to leads and clients
 - [ ] Chat with users
-- [ ] Upload files to leads and clients
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Deploy

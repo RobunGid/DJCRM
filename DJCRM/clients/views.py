@@ -1,3 +1,5 @@
+from PIL import Image
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView, View
 from django.contrib.messages.views import SuccessMessageMixin
@@ -6,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect
 
 from core.utils import DataMixin
 from clients.models import Client
-from clients.forms import AddClientForm, AddClientCommentForm
+from clients.forms import AddClientForm, AddClientCommentForm, AddClientFileForm
 from teams.models import Team
 
 class ClientListPage(DataMixin, LoginRequiredMixin, ListView):
@@ -26,6 +28,7 @@ class ClientDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Client Details - ID #{self.object.pk}"
         context["add_comment_form"] = AddClientCommentForm
+        context["add_file_form"] = AddClientFileForm
         return context
 
 class ClientDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
@@ -95,4 +98,26 @@ class ClientCommentAddView(View):
             comment.client_id = pk
             comment.save()
     
+        return redirect("clients:client_details", pk=pk)
+    
+class ClientFileAddView(View):
+    def post(self, request, *args, **kwargs):
+        form = AddClientFileForm(request.POST, request.FILES)
+        pk = kwargs.get("pk")
+        
+        if form.is_valid():
+            team = Team.objects.filter(created_by=request.user).first()
+            client_file = form.save(commit=False)
+            client_file.team = team
+            client_file.created_by = request.user
+            client_file.client_id = pk
+            try:
+                with Image.open(client_file.file) as img:
+                    img.verify()
+            except (IOError, SyntaxError):
+                client_file.is_image = False
+            else:
+                client_file.is_image = True
+            client_file.save()
+
         return redirect("clients:client_details", pk=pk)

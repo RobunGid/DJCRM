@@ -1,6 +1,6 @@
 from django import forms
 
-from clients.models import Client, ClientComment
+from clients.models import Client, ClientComment, ClientFile
 
 class AddClientForm(forms.ModelForm):
     class Meta:
@@ -19,3 +19,8 @@ class AddClientCommentForm(forms.ModelForm):
         widgets = {
             "content": forms.Textarea(attrs={"class": "form-control", "placeholder": "Enter comment content", "style": "resize: none;"}),
 		}
+        
+class AddClientFileForm(forms.ModelForm):
+    class Meta:
+        model = ClientFile
+        fields = ("file", )
