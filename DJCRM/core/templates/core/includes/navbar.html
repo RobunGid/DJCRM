@@ -1,0 +1,108 @@
+<nav class="container border-bottom border-secondary width-full px-5">
+	<div class="d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap flex-md-nowrap">
+	<a href="{% url 'index' %}" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+		<img src="/static/icons/djcrm.svg" width="52" height="52">
+	</a>
+	<ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+		<li>
+		<a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/home.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Home
+		</a>
+		</li>
+		<li>
+		<a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/info.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			About
+		</a>
+		</li>
+		{% if request.user.is_authenticated %}
+		<li>
+		<a href="{% url 'dashboard:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == "dashboard" %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/speedometer.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Dashboard
+		</a>
+		</li>
+		{% endif  %}
+		<li>
+		<a href="#" class="nav-link {% if request.path == "/orders/" %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/table.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Orders
+		</a>
+		</li>
+		<li>
+		<a href="#" class="nav-link {% if request.path == "/products/" %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/cart.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Products
+		</a>
+		</li>
+		{% if request.user.is_authenticated %}
+		<li>
+		<a href="{% url 'leads:lead_list' %}" class="nav-link {% if request.resolver_match.url_name == "lead_list" %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/people.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Leads
+		</a>
+		</li>
+		{% endif %}
+		{% if request.user.is_authenticated %}
+		<li>
+		<a href="{% url 'clients:client_list' %}" class="nav-link {% if request.resolver_match.url_name == "client_list" %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/people_search.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Clients
+		</a>
+		</li>
+		{% endif %}
+		{% if request.user.is_authenticated %}
+		<li>
+		<a href="{% url 'admin:index' %}" class="nav-link {% if request.resolver_match.url_name == 'admin' %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/shield.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Admin panel
+		</a>
+		</li>
+		{% endif %}
+		{% if not request.user.is_authenticated %}
+		<li>
+		<a href="{% url 'users:login' %}" class="nav-link {% if request.resolver_match.url_name == 'login' %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/login.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Login
+		</a>
+		</li>
+		{% endif %}
+		{% if not request.user.is_authenticated %}
+		<li>
+		<a href="{% url "users:register" %}" class="nav-link {% if request.resolver_match.url_name == 'register' %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/register.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Register
+		</a>
+		</li>
+		{% endif %}
+		{% if request.user.is_authenticated %}
+		<li>
+		<a href="{% url "users:profile" %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/profile.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Profile
+		</a>
+		</li>
+		{% endif %}
+		{% if request.user.is_authenticated %}
+		<li>
+		<a href="{% url 'teams:team_details' team.pk %}" class="nav-link {% if request.resolver_match.url_name == 'team_details' %}link-primary{% else %}link-secondary{% endif %}">
+			<img src="/static/icons/team.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			{{ team.name }}
+		</a>
+		</li>
+		{% endif %}
+		{% if request.user.is_authenticated %}
+		<li>
+		<form method="POST" action="{% url 'users:logout' %}">
+			{% csrf_token  %}
+			<button class="nav-link link-secondary">
+			<img src="/static/icons/logout.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+			Logout
+			</button>
+		</form>
+		</li>
+		{% endif %}
+	</ul>
+	</div>
+</nav>
