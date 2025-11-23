@@ -3,7 +3,7 @@ from unfold.admin import ModelAdmin
 from unfold.contrib.forms.widgets import WysiwygWidget
 from django.db import models
 
-from leads.models import Lead, LeadComment
+from leads.models import Lead, LeadComment, LeadFile
 
 @admin.register(Lead)
 class LeadAdmin(ModelAdmin):
@@ -20,4 +20,9 @@ class LeadAdmin(ModelAdmin):
 @admin.register(LeadComment)
 class LeadCommentAdmin(ModelAdmin):
     list_display = ("pk", "content", "team", "created_by", "created_at", "updated_at", "lead")
+    search_fields = ("content",)
+    
+@admin.register(LeadFile)
+class LeadFileAdmin(ModelAdmin):
+    list_display = ("pk", "file", "team", "created_by", "created_at", "updated_at", "lead")
     search_fields = ("content",)

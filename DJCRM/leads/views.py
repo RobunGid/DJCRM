@@ -1,3 +1,5 @@
+from PIL import Image
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -6,8 +8,8 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
 from core.utils import DataMixin
-from leads.models import Lead, LeadComment
-from leads.forms import AddLeadForm, AddLeadCommentForm
+from leads.models import Lead
+from leads.forms import AddLeadForm, AddLeadCommentForm, AddLeadFileForm
 from clients.models import Client, ClientComment
 from teams.models import Team
 
@@ -49,6 +51,7 @@ class LeadDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Lead Details - ID #{self.object.pk}"
         context["add_comment_form"] = AddLeadCommentForm
+        context["add_file_form"] = AddLeadFileForm
         return context
     
 class LeadUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateView):
@@ -98,11 +101,11 @@ class LeadConvertToClientPage(LoginRequiredMixin, DataMixin, TemplateView):
         comments = lead.comments.all()
         for comment in comments:
             ClientComment.objects.create(
-				created_by=comment.created_by,
-				content=comment.content,
-				client=client,
-				team=team
-			)
+                created_by=comment.created_by,
+                content=comment.content,
+                client=client,
+                team=team
+            )
             
         
         client.save()
@@ -113,10 +116,9 @@ class LeadConvertToClientPage(LoginRequiredMixin, DataMixin, TemplateView):
 class LeadCommentAddView(View):
     def post(self, request, *args, **kwargs):
         form = AddLeadCommentForm(request.POST)
+        pk = kwargs.get("pk")
         
         if form.is_valid():
-            pk = kwargs.get("pk")
-            
             team = Team.objects.filter(created_by=request.user).first()
             comment = form.save(commit=False)
             comment.team = team
@@ -124,4 +126,26 @@ class LeadCommentAddView(View):
             comment.lead_id = pk
             comment.save()
     
+        return redirect("leads:lead_details", pk=pk)
+    
+class LeadFileAddView(View):
+    def post(self, request, *args, **kwargs):
+        form = AddLeadFileForm(request.POST, request.FILES)
+        pk = kwargs.get("pk")
+        
+        if form.is_valid():
+            team = Team.objects.filter(created_by=request.user).first()
+            lead_file = form.save(commit=False)
+            lead_file.team = team
+            lead_file.created_by = request.user
+            lead_file.lead_id = pk
+            try:
+                with Image.open(lead_file.file) as img:
+                    img.verify()
+            except (IOError, SyntaxError):
+                lead_file.is_image = False
+            else:
+                lead_file.is_image = True
+            lead_file.save()
+
         return redirect("leads:lead_details", pk=pk)

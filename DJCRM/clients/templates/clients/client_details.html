@@ -33,7 +33,7 @@
 							<div class="card-body">
 								<div class="d-flex flex-start align-items-center">
 									<img class="rounded-circle shadow-1-strong me-3"
-										src="{{ comment.created_by.avatar_url|default:'/static/media/avatar.svg' }}"
+										src="{{ comment.created_by.avatar_url|default:'/static/images/avatar.svg' }}"
 										style="filter: invert(100%);"
 										width="60" height="60" />
 									<div>
@@ -55,7 +55,7 @@
 								{% csrf_token %}
 								<div class="d-flex flex-start pe-5">
 									<img class="rounded-circle shadow-1-strong me-3"
-										src="{{ user.avatar_url|default:'/static/media/avatar.svg' }}"
+										src="{{ user.avatar_url|default:'/static/images/avatar.svg' }}"
 										style="filter: invert(100%);"
 										width="40" height="40" />
 									<div class="w-100">

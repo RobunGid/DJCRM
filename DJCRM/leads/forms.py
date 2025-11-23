@@ -1,6 +1,6 @@
 from django import forms
 
-from leads.models import Lead, LeadComment
+from leads.models import Lead, LeadComment, LeadFile
 
 class AddLeadForm(forms.ModelForm):
     class Meta:
@@ -21,3 +21,8 @@ class AddLeadCommentForm(forms.ModelForm):
         widgets = {
             "content": forms.Textarea(attrs={"class": "form-control", "placeholder": "Enter comment content", "style": "resize: none;"}),
 		}
+        
+class AddLeadFileForm(forms.ModelForm):
+    class Meta:
+        model = LeadFile
+        fields = ("file", )

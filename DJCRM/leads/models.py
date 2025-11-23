@@ -1,3 +1,5 @@
+from os import path
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -48,6 +50,24 @@ class Lead(models.Model):
     def get_absolute_url(self):
         return reverse("leads:lead_details", kwargs={"pk": self.pk})
     
+class LeadFile(models.Model):
+    file = models.FileField(upload_to='lead_files')
+    
+    team = models.ForeignKey(Team, related_name="lead_files", on_delete=models.CASCADE)
+    lead = models.ForeignKey(Lead, related_name="files", on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, related_name="lead_files", on_delete=models.CASCADE)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    is_image = models.BooleanField()
+    
+    def __str__(self):
+        return f'@{self.created_by.username}: {self.content}'
+    
+    def filename(self):
+        return path.basename(self.file.name)
+    
 class LeadComment(models.Model):
     content = models.TextField(blank=True, null=True)
     
@@ -57,3 +77,6 @@ class LeadComment(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f'@{self.created_by.username}: {self.content}'
