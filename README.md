@@ -46,5 +46,7 @@ CRM using Django Framework
 - [x] Upload files to leads and clients
 - [x] Export information
 - [ ] Chat with users
+- [ ] Active team
+- [ ] Team details
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Deploy
