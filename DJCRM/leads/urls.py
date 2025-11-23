@@ -13,4 +13,5 @@ urlpatterns = [
     path("lead-convert/<int:pk>/", views.LeadConvertToClientPage.as_view(), name="lead_convert_to_client"),
     path("lead-add-comment/<int:pk>/", views.LeadCommentAddView.as_view(), name="lead_add_comment"),
     path("lead-add-file/<int:pk>/", views.LeadFileAddView.as_view(), name="lead_add_file"),
+    path("lead-export/csv/", views.LeadExportCSVView.as_view(), name="lead_export_csv"),
 ]

@@ -1,4 +1,5 @@
 from PIL import Image
+import csv
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
@@ -6,6 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, DetailView, TemplateView, UpdateView, View
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponse
 
 from core.utils import DataMixin
 from leads.models import Lead
@@ -149,3 +151,20 @@ class LeadFileAddView(View):
             lead_file.save()
 
         return redirect("leads:lead_details", pk=pk)
+    
+class LeadExportCSVView(View):
+    def get(self, request, *args, **kwargs):
+        leads = Lead.objects.filter(created_by=request.user)
+        
+        response = HttpResponse(
+			content_type="text/csv",
+			headers={"Content-Disposition": 'attachment; filename="leads.csv"'}
+		)
+        
+        writer = csv.writer(response)
+        writer.writerow(['ID', 'Lead', 'Description', 'Created at', 'Created by'])
+        
+        for lead in leads:
+            writer.writerow([lead.pk, lead.name, lead.description, lead.created_at, lead.created_by])
+            
+        return response

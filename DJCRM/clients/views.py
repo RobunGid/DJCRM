@@ -1,9 +1,11 @@
 from PIL import Image
+import csv
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView, View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 
 from core.utils import DataMixin
@@ -121,3 +123,20 @@ class ClientFileAddView(View):
             client_file.save()
 
         return redirect("clients:client_details", pk=pk)
+    
+class ClientExportCSVView(View):
+    def get(self, request, *args, **kwargs):
+        clients = Client.objects.filter(created_by=request.user)
+        
+        response = HttpResponse(
+			content_type="text/csv",
+			headers={"Content-Disposition": 'attachment; filename="clients.csv"'}
+		)
+        
+        writer = csv.writer(response)
+        writer.writerow(['ID', 'Client', 'Description', 'Created at', 'Created by'])
+        
+        for client in clients:
+            writer.writerow([client.pk, client.name, client.description, client.created_at, client.created_by])
+            
+        return response

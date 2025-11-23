@@ -66,22 +66,6 @@
 		  {% endif %}
 		  {% if request.user.is_authenticated %}
           <li>
-            <a href="{% url 'leads:lead_add' %}" class="nav-link {% if request.resolver_match.url_name == 'lead_add' %}link-primary{% else %}link-secondary{% endif %}">
-              <img src="/static/icons/people_plus.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
-              Add lead
-            </a>
-          </li>
-		  {% endif %}
-		  {% if request.user.is_authenticated %}
-          <li>
-            <a href="{% url 'clients:client_add' %}" class="nav-link {% if request.resolver_match.url_name == 'client_add' %}link-primary{% else %}link-secondary{% endif %}">
-              <img src="/static/icons/people_plus.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
-              Add client
-            </a>
-          </li>
-		  {% endif %}
-		  {% if request.user.is_authenticated %}
-          <li>
             <a href="{% url 'admin:index' %}" class="nav-link {% if request.resolver_match.url_name == 'admin' %}link-primary{% else %}link-secondary{% endif %}">
               <img src="/static/icons/shield.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
               Admin panel

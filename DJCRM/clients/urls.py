@@ -12,4 +12,5 @@ urlpatterns = [
 	path("client-add/", views.ClientAddPage.as_view(), name="client_add"),
     path("client-add-comment/<int:pk>/", views.ClientCommentAddView.as_view(), name="client_add_comment"),
     path("client-add-file/<int:pk>/", views.ClientFileAddView.as_view(), name="client_add_file"),
+    path("client-export/csv/", views.ClientExportCSVView.as_view(), name="client_export_csv"),
 ]
