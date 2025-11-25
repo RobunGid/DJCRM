@@ -2,8 +2,9 @@ from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
+from django.contrib.auth.views import PasswordChangeView
 
-from users.forms import LoginUserForm, RegisterUserForm
+from users.forms import LoginUserForm, RegisterUserForm, UserPasswordChangeForm
 from teams.models import Team
 from users.models import Userprofile
 
@@ -39,3 +40,8 @@ class UserProfile(LoginRequiredMixin, TemplateView):
         context["joined_teams"] = Team.objects.filter(members__in=[self.request.user]).all()
         return context
     
+class UserPasswordChange(PasswordChangeView):
+    form_class = UserPasswordChangeForm
+    success_url = reverse_lazy("users:password_change_done")
+    template_name = "users/password_change_form.html"
+    title = "Password change"
