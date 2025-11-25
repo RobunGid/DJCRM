@@ -11,7 +11,6 @@ from django.shortcuts import get_object_or_404, redirect
 from core.utils import DataMixin
 from clients.models import Client
 from clients.forms import AddClientForm, AddClientCommentForm, AddClientFileForm
-from teams.models import Team
 
 class ClientListPage(DataMixin, LoginRequiredMixin, ListView):
     template_name = "clients/client_list.html"
@@ -69,7 +68,7 @@ class ClientAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateVi
     def form_valid(self, form):
         client = form.save(commit=False)
         client.created_by = self.request.user
-        client.team = Team.objects.filter(created_by=self.request.user).first()
+        client.team = self.request.user.userprofile.active_team
         return super().form_valid(form)
     
 class ClientUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateView):
@@ -93,7 +92,7 @@ class ClientCommentAddView(View):
         if form.is_valid():
             pk = kwargs.get("pk")
             
-            team = Team.objects.filter(created_by=request.user).first()
+            team = request.user.userprofile.active_team
             comment = form.save(commit=False)
             comment.team = team
             comment.created_by = request.user
@@ -108,7 +107,7 @@ class ClientFileAddView(View):
         pk = kwargs.get("pk")
         
         if form.is_valid():
-            team = Team.objects.filter(created_by=request.user).first()
+            team = request.user.userprofile.active_team
             client_file = form.save(commit=False)
             client_file.team = team
             client_file.created_by = request.user

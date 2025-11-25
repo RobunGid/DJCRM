@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                     {% for team in teams %}
-                    <tr class="position-relative {% if team == user.userprofile.active_team %}table-primary{% endif %}">
+                    <tr class="position-relative {% if team == active_team %}table-success{% endif %}">
 						<td>
 							<a href="{% url 'teams:team_details' team.pk %}" class="stretched-link"></a>
 							{{ team.pk }}

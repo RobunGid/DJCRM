@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView, DetailView, ListView
+from django.views.generic import UpdateView, DetailView, ListView, View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
 
 from core.utils import DataMixin
 from teams.models import Team
@@ -43,3 +44,11 @@ class TeamListPage(DataMixin, LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         return context
     
+class TeamActiveView(DataMixin, LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        team = Team.objects.filter(members__in=[request.user]).get(pk=kwargs["pk"])
+        userprofile = request.user.userprofile
+        userprofile.active_team = team
+        userprofile.save()
+        
+        return redirect("teams:team_details", pk=kwargs["pk"])

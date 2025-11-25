@@ -45,7 +45,11 @@
             <a href="{% url 'teams:team_update' team.pk %}" class="btn btn-info">Edit Team</a>
             {% endif %}
 			{% if team != user.userprofile.active_team %}
-			<a href="{% url 'teams:team_update' team.pk %}" class="btn btn-success">Make Active</a>
+			<form action="{% url 'teams:team_make_active' team.pk %}" method="POST">
+				{% csrf_token %}
+				<button class="btn btn-success">Make Active</button>
+			</form>
+
 			{% endif %}
             <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">Back</a>
         </div>

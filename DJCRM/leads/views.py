@@ -13,7 +13,6 @@ from core.utils import DataMixin
 from leads.models import Lead
 from leads.forms import AddLeadForm, AddLeadCommentForm, AddLeadFileForm
 from clients.models import Client, ClientComment
-from teams.models import Team
 
 class LeadAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView):
     form_class = AddLeadForm
@@ -27,13 +26,13 @@ class LeadAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["header_title"] = "Add Lead"
-        context["allow_to_add"] = self.request.user.teams.first().leads.all().count() < self.request.user.teams.first().plan.max_leads
+        context["allow_to_add"] = self.request.user.userprofile.active_team.leads.all().count() < self.request.user.userprofile.active_team.plan.max_leads
         return context
     
     def form_valid(self, form):
         lead = form.save(commit=False)
         lead.created_by = self.request.user
-        lead.team = Team.objects.filter(created_by=self.request.user).first()
+        lead.team = self.request.user.userprofile.active_team
         return super().form_valid(form)
     
 class LeadListPage(DataMixin, LoginRequiredMixin, ListView):
@@ -88,7 +87,7 @@ class LeadConvertToClientPage(LoginRequiredMixin, DataMixin, TemplateView):
     
     def post(self, request, *args, **kwargs):
         lead = get_object_or_404(Lead, pk=kwargs["pk"])
-        team = Team.objects.filter(created_by=request.user).first()
+        team = request.user.userprofile.active_team
         
         client = Client.objects.create(
             name=lead.name,
@@ -109,7 +108,6 @@ class LeadConvertToClientPage(LoginRequiredMixin, DataMixin, TemplateView):
                 team=team
             )
             
-        
         client.save()
         lead.save()  
         messages.success(request, self.success_message)
@@ -121,7 +119,7 @@ class LeadCommentAddView(View):
         pk = kwargs.get("pk")
         
         if form.is_valid():
-            team = Team.objects.filter(created_by=request.user).first()
+            team = request.user.userprofile.active_team
             comment = form.save(commit=False)
             comment.team = team
             comment.created_by = request.user
@@ -136,7 +134,7 @@ class LeadFileAddView(View):
         pk = kwargs.get("pk")
         
         if form.is_valid():
-            team = Team.objects.filter(created_by=request.user).first()
+            team = request.user.userprofile.active_team
             lead_file = form.save(commit=False)
             lead_file.team = team
             lead_file.created_by = request.user

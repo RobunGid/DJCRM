@@ -8,4 +8,4 @@ def team(request):
             team = Team.objects.filter(created_by=request.user).first()
     else:
         team = None
-    return {"team": team}
+    return {"active_team": team}
