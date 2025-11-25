@@ -1,4 +1,37 @@
 {% extends 'core/base.html' %}
+
 {% block content %}
-	About page
+
+<div class="container my-5" style="max-width: 900px;">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            About This Project
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Welcome to DJCRM</h5>
+            <p>
+                DJCRM is designed to help users manage leads, teams, and clients efficiently 
+                You can create leads, organize teams, and collaborate with other users on products and orders
+            </p>
+
+            <h6 class="mt-4">Key Features</h6>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">Create and manage <a href="{% url 'leads:lead_list' %}">leads</a></li>
+                <li class="list-group-item">Organize <a href="{% url 'teams:team_list' %}">teams</a> and assign members</li>
+                <li class="list-group-item">Track client information and project progress</li>
+                <li class="list-group-item">Secure user authentication and profile management</li>
+            </ul>
+
+            <h6 class="mt-4">Contact</h6>
+            <p>
+                For questions or support, please reach out to our team at 
+                <a href="mailto:support@example.com">support@example.com</a>.
+            </p>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">Dashboard</a>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
