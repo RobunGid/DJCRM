@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView, DetailView
+from django.views.generic import UpdateView, DetailView, ListView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 
@@ -24,4 +24,22 @@ class TeamUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateV
 class TeamDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
     model = Team
     template_name = "teams/team_details.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.get_object().name
+        return context
+    
+class TeamListPage(DataMixin, LoginRequiredMixin, ListView):
+    model = Team
+    template_name = "teams/team_list.html"
     title = None
+    context_object_name = "teams"
+    
+    def get_queryset(self):
+        return Team.objects.filter(members__in=[self.request.user]).all()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+    

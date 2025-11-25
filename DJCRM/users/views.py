@@ -5,6 +5,7 @@ from django.views.generic.edit import CreateView
 
 from users.forms import LoginUserForm, RegisterUserForm
 from teams.models import Team
+from users.models import Userprofile
 
 # Create your views here.
 class UserLogin(LoginView):
@@ -23,13 +24,18 @@ class UserRegister(CreateView):
         team = Team.objects.create(name=f"{form.cleaned_data["username"]}'s team", created_by=form.instance)
         team.members.add(form.instance.id)
         team.save()
+        
+        Userprofile.objects.create(user=form.instance, active_team=team)
+        
         return super().form_valid(form)
     
     
 class UserProfile(LoginRequiredMixin, TemplateView):
     template_name = "users/profile.html"
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["user"] = self.request.user
+        context["joined_teams"] = Team.objects.filter(members__in=[self.request.user]).all()
         return context
     
