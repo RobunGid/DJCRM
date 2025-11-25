@@ -1,4 +1,61 @@
 {% extends 'core/base.html' %}
+
 {% block content %}
-	Index page
+
+<div class="container my-5">
+
+    <div class="text-center mb-4">
+        <h2>Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+        <p class="text-muted">Here is an overview of your account and activities</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Leads</h5>
+                    <p class="card-text display-6">{{ leads_count }}</p>
+                    <a href="{% url 'leads:lead_list' %}" class="btn btn-primary btn-sm">View Leads</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Clients</h5>
+                    <p class="card-text display-6">{{ clients_count }}</p>
+                    <a href="{% url 'clients:client_list' %}" class="btn btn-success btn-sm">View Clients</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Teams</h5>
+                    <p class="card-text display-6">{{ teams_count }}</p>
+                    <a href="{% url 'teams:team_list' %}" class="btn btn-info btn-sm">View Teams</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            Latest Updates
+        </div>
+        <div class="card-body">
+            {% for update in latest_updates %}
+                <div class="mb-3">
+                    <h6>{{ update.title }}</h6>
+                    <p class="text-muted small">{{ update.date }}</p>
+                    <p>{{ update.description }}</p>
+                </div>
+            {% empty %}
+                <p class="text-center text-muted">No recent updates</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}
