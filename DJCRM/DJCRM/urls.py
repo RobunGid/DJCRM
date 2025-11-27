@@ -29,6 +29,7 @@ urlpatterns = [
 	path('dashboard/leads/', include('leads.urls', namespace='leads')),
 	path('dashboard/clients/', include('clients.urls', namespace='clients')),
 	path('dashboard/teams/', include('teams.urls', namespace='teams')),
+	path('dashboard/products/', include('products.urls', namespace='products')),
     path('admin/', admin.site.urls),
 ]
 

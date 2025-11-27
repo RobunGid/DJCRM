@@ -9,6 +9,8 @@ class Plan(models.Model):
     description = models.TextField(blank=True, null=True)
     max_leads = models.IntegerField()
     max_clients = models.IntegerField()
+    max_products = models.IntegerField()
+    max_orders = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

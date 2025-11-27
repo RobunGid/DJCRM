@@ -1,0 +1,71 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center gap-2">
+	<a href="{% url 'products:product_add' %}" class="btn btn-primary d-flex gap-2 align-items-center">
+		<img src="/static/icons/box.svg" width="24" height="24" class="d-block mx-auto" style="filter: invert(100%">
+		Add product
+	</a>
+	<a class="btn btn-primary d-flex gap-2 align-items-center" href="{% url 'products:product_export_csv' %}">
+		<img src="/static/icons/export.svg" width="24" height="24" class="d-block mx-auto" style="filter: invert(100%">
+		Export products to CSV
+	</a>
+</div>
+
+<div class="container table-responsive my-2">
+	{% if products|length > 0 %}
+	<table class="table table-dark table-hover table-striped table-bordered align-middle">
+		<thead class="table-dark">
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Price</th>
+				<th>Description</th>
+				<th>Status</th>
+				<th>Weight</th>
+				<th>Stock Quantity</th>
+				<th>Team</th>
+				<th>Created By</th>
+				<th>Created At</th>
+				<th>Updated At</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for product in products %}
+			<tr class="position-relative">
+				<td>
+					<a href="{% url 'products:product_details' product.pk %}" class="stretched-link" title="{{ product.description }}"></a>
+					{{ product.pk }}
+				</td>
+				<td>{{ product.name }}</td>
+				<td>{{ product.price }}€</td>
+				<td>{{ product.description|truncatewords:10 }}</td>
+				<td>
+					<span class="badge border
+						{% if product.status == product.Status.DRAFT %}bg-secondary
+						{% elif product.status == product.Status.OUT_OF_STOCK %}bg-dark
+						{% elif product.status == product.Status.ARCHIVED %}bg-secondary
+						{% elif product.status == product.Status.ACTIVE %}bg-success
+						{% elif product.status == product.Status.INACTIVE %}bg-warning
+						{% endif %}
+					">{{ product.get_status_display }}</span>
+				</td>
+				<td>{{ product.weight }}g</td>
+				<td>{{ product.stock_quantity }}</td>
+				<td>{{ product.team.name }}</td>
+				<td>{{ product.created_by.username }}</td>
+				<td>{{ product.created_at }}</td>
+				<td>{{ product.updated_at }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	<p>No products available. You can <a class="icon-link gap-0" href="{% url 'products:product_add' %}">
+		add new Products 
+	<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.2rem" width="1.2rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M6 6v2h8.59L5 17.59 6.41 19 16 9.41V18h2V6z"></path></svg>
+	</a> to get started</p>
+	{% endif %}
+</div>
+
+{% endblock %}
