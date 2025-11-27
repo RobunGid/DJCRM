@@ -10,7 +10,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 
 from core.utils import DataMixin
-from leads.models import Lead
+from leads.models import Lead, LeadComment, LeadFile
 from leads.forms import AddLeadForm, AddLeadCommentForm, AddLeadFileForm
 from clients.models import Client, ClientComment
 
@@ -79,6 +79,26 @@ class LeadDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteV
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Delete Lead - ID #{self.object.pk}"
         return context
+
+class LeadCommentDeleteView(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
+    model = LeadComment
+    success_message = "Lead comment was deleted successfully"
+    
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy("leads:lead_details", kwargs={"pk": self.object.lead.pk})
+    
+class LeadFileDeleteView(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
+    model = LeadFile
+    success_message = "Lead file was deleted successfully"
+    
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy("leads:lead_details", kwargs={"pk": self.object.lead.pk})
     
 class LeadConvertToClientPage(LoginRequiredMixin, DataMixin, TemplateView):
     template_name = "leads/lead_convert_to_client.html"
@@ -155,9 +175,9 @@ class LeadExportCSVView(View):
         leads = Lead.objects.filter(created_by=request.user)
         
         response = HttpResponse(
-			content_type="text/csv",
-			headers={"Content-Disposition": 'attachment; filename="leads.csv"'}
-		)
+            content_type="text/csv",
+            headers={"Content-Disposition": 'attachment; filename="leads.csv"'}
+        )
         
         writer = csv.writer(response)
         writer.writerow(['ID', 'Lead', 'Description', 'Created at', 'Created by'])

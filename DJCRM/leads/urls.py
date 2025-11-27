@@ -12,6 +12,8 @@ urlpatterns = [
     path("lead-delete/<int:pk>/", views.LeadDeletePage.as_view(), name="lead_delete"),
     path("lead-convert/<int:pk>/", views.LeadConvertToClientPage.as_view(), name="lead_convert_to_client"),
     path("lead-add-comment/<int:pk>/", views.LeadCommentAddView.as_view(), name="lead_add_comment"),
+    path("lead-delete-comment/<int:pk>/", views.LeadCommentDeleteView.as_view(), name="lead_delete_comment"),
+    path("lead-delete-file/<int:pk>/", views.LeadFileDeleteView.as_view(), name="lead_delete_file"),
     path("lead-add-file/<int:pk>/", views.LeadFileAddView.as_view(), name="lead_add_file"),
     path("lead-export/csv/", views.LeadExportCSVView.as_view(), name="lead_export_csv"),
 ]
