@@ -3,6 +3,7 @@ from os import path
 from django.db import models
 from django.contrib.auth import get_user_model
 from django_enum import EnumField
+from django.urls import reverse
 
 from teams.models import Team
 
@@ -31,6 +32,9 @@ class Product(models.Model):
     
     def __str__(self):
         return f'{self.pk}: {self.name}'
+    
+    def get_absolute_url(self):
+        return reverse("products:product_details", kwargs={"pk": self.pk})
     
 class ProductFile(models.Model):
     file = models.FileField(upload_to='product_files')

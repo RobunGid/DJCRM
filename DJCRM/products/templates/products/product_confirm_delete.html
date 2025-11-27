@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px">
+	<div class="card border-danger">
+		<div class="card-header bg-danger text-white">
+			Delete Product
+		</div>
+		<div class="card-body">
+			<p class="text-danger">Are you sure you want to delete this product?</p>
+			<h5 class="card-title">{{ object.name }}</h5>
+			<p class="card-text"><strong>Price:</strong> {{ object.price }}</p>
+			<p class="card-text"><strong>Description:</strong> {{ object.description|default:"No description" }}</p>
+			<p class="card-text"><strong>Team:</strong> {{ object.team.name }}</p>
+			<p class="card-text"><strong>Weight:</strong> {{ object.weight }}</p>
+			<p class="card-text"><strong>Stock:</strong> {{ object.stock_quantity }}</p>
+			<p class="card-text"><strong>Status:</strong> {{ object.get_status_display }}</p>
+			<p class="card-text"><strong>Created By:</strong> {{ object.created_by.username }}</p>
+			<p class="card-text"><strong>Created At:</strong> {{ object.created_at }}</p>
+			<p class="card-text"><strong>Updated At:</strong> {{ object.updated_at }}</p>
+
+			<form method="post">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger">Delete</button>
+				<a href="{% url 'products:product_list' %}" class="btn btn-secondary">Cancel</a>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
