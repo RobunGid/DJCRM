@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 
 from core.utils import DataMixin
-from clients.models import Client
+from clients.models import Client, ClientFile, ClientComment
 from clients.forms import AddClientForm, AddClientCommentForm, AddClientFileForm
 
 class ClientListPage(DataMixin, LoginRequiredMixin, ListView):
@@ -122,6 +122,26 @@ class ClientFileAddView(View):
             client_file.save()
 
         return redirect("clients:client_details", pk=pk)
+    
+class ClientCommentDeleteView(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
+    model = ClientComment
+    success_message = "Client comment was deleted successfully"
+    
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy("clients:client_details", kwargs={"pk": self.object.client.pk})
+    
+class ClientFileDeleteView(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
+    model = ClientFile
+    success_message = "Client file was deleted successfully"
+    
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy("clients:client_details", kwargs={"pk": self.object.client.pk})
     
 class ClientExportCSVView(View):
     def get(self, request, *args, **kwargs):
