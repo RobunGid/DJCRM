@@ -50,6 +50,22 @@ CRM using Django Framework
 - [x] Password Change
 - [x] Password Reset
 - [x] Info page
+- [x] CRUD with products
+	- [x] App
+	- [x] DB models
+	- [x] Product list
+	- [x] Product details
+	- [x] Product create
+	- [x] Product delete
+	- [x] Product update
+- [ ] CRUD with orders
+	- [ ] App
+	- [ ] DB models
+	- [ ] Orders list
+	- [ ] Order details
+	- [ ] Order create
+	- [ ] Order delete
+	- [ ] Order update
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Chat with users
 - [ ] Deploy
