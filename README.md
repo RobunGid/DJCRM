@@ -59,8 +59,8 @@ CRM using Django Framework
 	- [x] Product delete
 	- [x] Product update
 - [ ] CRUD with orders
-	- [ ] App
-	- [ ] DB models
+	- [x] App
+	- [x] DB models
 	- [ ] Orders list
 	- [ ] Order details
 	- [ ] Order create
