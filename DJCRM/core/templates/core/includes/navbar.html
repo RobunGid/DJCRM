@@ -25,7 +25,7 @@
 		</li>
 		{% endif  %}
 		<li>
-		<a href="#" class="nav-link {% if request.path == "/orders/" %}link-primary{% else %}link-secondary{% endif %}">
+		<a href="{% url 'orders:order_list' %}" class="nav-link {% if request.resolver_match.url_name == "order_list" %}link-primary{% else %}link-secondary{% endif %}">
 			<img src="/static/icons/table.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
 			Orders
 		</a>
