@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px">
+	<div class="card border-danger">
+		<div class="card-header bg-danger text-white">
+			Delete Order
+		</div>
+		<div class="card-body">
+			<p class="text-danger">Are you sure you want to delete this order?</p>
+			<h5 class="card-title">Order #{{ object.pk }}</h5>
+
+			<p class="card-text">
+				<strong>Status:</strong> {{ object.get_status_display }}
+			</p>
+
+			<p class="card-text">
+				<strong>Team:</strong> {{ object.team.name }}
+			</p>
+
+			<p class="card-text">
+				<strong>Created By:</strong> {{ object.created_by.username }}
+			</p>
+
+			<p class="card-text">
+				<strong>Products:</strong>
+				<ul>
+					{% for item in object.orderitems_set.all %}
+					<li>{{ item.product.name }} × {{ item.quantity }}</li>
+					{% empty %}
+					<li>No products</li>
+					{% endfor %}
+				</ul>
+			</p>
+
+			<p class="card-text"><strong>Created At:</strong> {{ object.created_at }}</p>
+			<p class="card-text"><strong>Updated At:</strong> {{ object.updated_at }}</p>
+
+			<form method="post">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger">Delete</button>
+				<a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Cancel</a>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

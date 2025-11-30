@@ -9,7 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 
 from core.utils import DataMixin
-from orders.models import Order
+from orders.models import Order, OrderComment, OrderFile
 from orders.forms import AddOrderCommentForm, AddOrderFileForm, OrderForm, OrderItemsFormSet
 
 class OrderCreatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView):
@@ -35,13 +35,14 @@ class OrderCreatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, Create
         context = self.get_context_data()
         order_items_formset = context['order_items_formset']
         if order_items_formset.is_valid():
-            self.object = form.save()
-            order_items_formset.instance = self.object
-            order_items_formset.save()
             order = form.save(commit=False)
             order.created_by = self.request.user
             order.team = self.request.user.userprofile.active_team
-            return redirect(self.object.get_absolute_url())
+            order.save()
+            for form in order_items_formset:
+                form.instance.order_id = order.pk
+                form.instance.save()
+            return redirect(order.get_absolute_url())
         return self.form_invalid(form)
         
 class OrderListPage(DataMixin, LoginRequiredMixin, ListView):
@@ -88,6 +89,26 @@ class OrderDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, Delete
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Delete Order - ID #{self.object.pk}"
         return context
+    
+class OrderCommentDeleteView(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
+    model = OrderComment
+    success_message = "Order comment was deleted successfully"
+    
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy("orders:order_details", kwargs={"pk": self.object.order.pk})
+    
+class OrderFileDeleteView(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
+    model = OrderFile
+    success_message = "Order file was deleted successfully"
+    
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy("orders:order_details", kwargs={"pk": self.object.order.pk})
     
 class OrderCommentAddView(View):
     def post(self, request, *args, **kwargs):

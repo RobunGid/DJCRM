@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center gap-2">
+	<a href="{% url 'orders:order_create' %}" class="btn btn-primary d-flex gap-2 align-items-center">
+		<img src="/static/icons/box.svg" width="24" height="24" class="d-block mx-auto" style="filter: invert(100%">
+		Add order
+	</a>
+</div>
+
+<div class="container table-responsive my-2">
+	{% if orders|length > 0 %}
+	<table class="table table-dark table-hover table-striped table-bordered align-middle">
+		<thead class="table-dark">
+			<tr>
+				<th>ID</th>
+				<th>Status</th>
+				<th>Team</th>
+				<th>Created By</th>
+				<th>Products</th>
+				<th>Created At</th>
+				<th>Updated At</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for order in orders %}
+			<tr class="position-relative">
+				<td>
+					<a href="{% url 'orders:order_details' order.pk %}" class="stretched-link"></a>
+					{{ order.pk }}
+				</td>
+				<td>
+					<span class="badge border
+						{% if order.status == order.Status.NEW %}bg-secondary
+						{% elif order.status == order.Status.PROCESSING %}bg-info
+						{% elif order.status == order.Status.PENDING_PAYMENT %}bg-warning
+						{% elif order.status == order.Status.PAID %}bg-success
+						{% elif order.status == order.Status.PENDING_SHIPMENT %}bg-warning
+						{% elif order.status == order.Status.SHIPPED %}bg-primary
+						{% elif order.status == order.Status.DELIVERED %}bg-success
+						{% elif order.status == order.Status.COMPLETED %}bg-success
+						{% elif order.status == order.Status.CANCELED %}bg-danger
+						{% elif order.status == order.Status.RETURNED %}bg-dark
+						{% endif %}
+					">{{ order.get_status_display }}</span>
+				</td>
+				<td>{{ order.team.name }}</td>
+				<td>{{ order.created_by.username }}</td>
+				<td>
+					{% for item in order.orderitems_set.all %}
+						{{ item.product.name }} (×{{ item.quantity }}){% if not forloop.last %}, {% endif %}
+					{% endfor %}
+				</td>
+				<td>{{ order.created_at }}</td>
+				<td>{{ order.updated_at }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	<p>No orders found. You can <a class="icon-link gap-0" href="{% url 'orders:order_create' %}">
+		create a new Order
+		<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.2rem" width="1.2rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M6 6v2h8.59L5 17.59 6.41 19 16 9.41V18h2V6z"></path></svg>
+	</a></p>
+	{% endif %}
+</div>
+
+{% endblock %}
