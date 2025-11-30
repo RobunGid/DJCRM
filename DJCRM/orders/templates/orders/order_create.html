@@ -8,23 +8,24 @@
         </div>
         <div class="card-body">
 			{% if allow_to_add %}
-            <form action="" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3">
+            <form action="" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3" id="create-product-form">
                 {% csrf_token %}
                 <input type="hidden" name="text" value="{{ enxt }}">
-                <div>{{ form.non_field_errors }}</div>
-                {% comment %} {% for f in form %}
-                    <div>
-                        <label for="{{ f.id_for_label }}" class="form-label">{{ f.label }}</label>
-                        {{ f }}
-                        <div class="text-danger small">{{ f.errors }}</div>
-                    </div>
-                {% endfor %} {% endcomment %}
 				{{ form }}
 				{{ order_items_formset.management_form }}
-				{% for f in order_items_formset %}
-					{{ f }}
-				{% endfor %}
-                <div class="d-flex gap-2">
+				<div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-info" id="add-order-item-btn">Add product</button>
+                    <a href="{% url 'orders:order_list' %}" class="btn btn-warning invisible" id="remove-order-item-btn">Remove last product</a>
+                </div>
+				<div id="product-items-container">
+					{% for f in order_items_formset %}
+					<div class="d-flex flex-row gap-2 order-item-form">
+						<p class="fw-bold">№{{ forloop.counter }}</p>
+						{{ f }}
+					</div>
+					{% endfor %}
+				</div>
+				<div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">{{ button_text }}</button>
                     <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Cancel</a>
                 </div>
@@ -40,4 +41,50 @@
         </div>
     </div>
 </div>
+<script>
+	const maxOrderItems = {{ request.user.userprofile.active_team.plan.max_order_items }};
+	const getOrderItemInputElements = () => document.querySelectorAll(".order-item-form");
+	const addOrderItemBtnElement = document.querySelector("#add-order-item-btn");
+	const removeOrderItemBtnElement = document.querySelector("#remove-order-item-btn");
+	const productItemsContainerElement = document.querySelector("#product-items-container");
+	
+	addOrderItemBtnElement.addEventListener("click", (event) => {
+		event.preventDefault();
+		const orderItemsElements = getOrderItemInputElements();
+		const newOrderItemElement = orderItemsElements[0].cloneNode(true);
+
+		newOrderItemElement.querySelector("p.fw-bold").textContent = "№" + (orderItemsElements.length+1);
+		newOrderItemElement.querySelector("div > label").htmlFor = `id_orderitems_set-${orderItemsElements.length}-product`;
+		newOrderItemElement.querySelector("div > select").name = `orderitems_set-${orderItemsElements.length}-product`;
+		newOrderItemElement.querySelector("div > select").id = `id_orderitems_set-${orderItemsElements.length}-product`;
+		newOrderItemElement.querySelector("div:nth-of-type(2) > label").htmlFor = `id_orderitems_set-${orderItemsElements.length}-quantity`;
+		newOrderItemElement.querySelector("div:nth-of-type(2) > input").name = `orderitems_set-${orderItemsElements.length}-quantity`;
+		newOrderItemElement.querySelector("div:nth-of-type(2) > input").id = `id_orderitems_set-${orderItemsElements.length}-quantity`;
+		newOrderItemElement.querySelector("div:nth-of-type(2) > input:nth-of-type(2)").name = `orderitems_set-${orderItemsElements.length}-id`;
+		newOrderItemElement.querySelector("div:nth-of-type(2) > input:nth-of-type(2)").id = `id_orderitems_set-${orderItemsElements.length}-id`;
+		newOrderItemElement.querySelector("div:nth-of-type(2) > input:nth-of-type(3)").name = `orderitems_set-${orderItemsElements.length}-order`;
+		newOrderItemElement.querySelector("div:nth-of-type(2) > input:nth-of-type(3)").id = `id_orderitems_set-${orderItemsElements.length}-order`;
+
+		document.querySelector('#id_orderitems_set-TOTAL_FORMS').value = orderItemsElements.length + 1
+		productItemsContainerElement.append(newOrderItemElement);
+		if (orderItemsElements.length == 1) {
+			removeOrderItemBtnElement.classList.remove("invisible");
+		};
+		if (orderItemsElements.length == maxOrderItems-1) {
+			addOrderItemBtnElement.classList.add("invisible");
+		};
+	})
+	removeOrderItemBtnElement.addEventListener("click", (event) => {
+		event.preventDefault();
+		const orderItemsElements = getOrderItemInputElements();
+		orderItemsElements[orderItemsElements.length-1].remove();
+		if (orderItemsElements.length == 2) {
+			removeOrderItemBtnElement.classList.add("invisible");
+		} 
+		if (orderItemsElements.length <= maxOrderItems+1) {
+			addOrderItemBtnElement.classList.remove("invisible");
+		};
+		document.querySelector('#id_orderitems_set-TOTAL_FORMS').value = orderItemsElements.length - 1
+	})
+</script>
 {% endblock %}

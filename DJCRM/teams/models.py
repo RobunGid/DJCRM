@@ -11,6 +11,7 @@ class Plan(models.Model):
     max_clients = models.IntegerField()
     max_products = models.IntegerField()
     max_orders = models.IntegerField()
+    max_order_items = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

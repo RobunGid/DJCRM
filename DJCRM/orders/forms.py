@@ -16,10 +16,10 @@ OrderItemsFormSet = forms.inlineformset_factory(
     fields=["product", "quantity"],
     can_delete=False,
     widgets={
-        "product": forms.Select(attrs={"class": "form-select"}), 
-        "quantity": forms.NumberInput(attrs={"class": "form-select"}), 
+        "product": forms.Select(attrs={"class": "form-select", "required": True}), 
+        "quantity": forms.NumberInput(attrs={"class": "form-select w-50", "required": True}), 
             },
-    extra=2
+    extra=1
 )
 
 class AddOrderCommentForm(forms.ModelForm):

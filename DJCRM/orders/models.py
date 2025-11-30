@@ -41,8 +41,8 @@ class Order(models.Model):
     
 class OrderItems(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=False)
+    quantity = models.PositiveIntegerField(default=1)
     
 class OrderFile(models.Model):
     file = models.FileField(upload_to='order_files')
