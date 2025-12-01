@@ -1,6 +1,7 @@
 from os import path
 
 from django.db import models
+from django.db.models import Func
 from django.contrib.auth import get_user_model
 from django_enum import EnumField
 from django.urls import reverse
@@ -73,3 +74,7 @@ class OrderComment(models.Model):
     
     def __str__(self):
         return f'@{self.created_by.username}: {self.content}'
+    
+class Round(Func):
+    function = 'ROUND'
+    template='%(function)s(%(expressions)s, 2)'

@@ -7,6 +7,8 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, DetailView, UpdateView, View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
+from django.db.models import Sum, F
+from django.db.models.functions import Round
 
 from core.utils import DataMixin
 from orders.models import Order, OrderComment, OrderFile
@@ -51,7 +53,9 @@ class OrderListPage(DataMixin, LoginRequiredMixin, ListView):
     context_object_name = "orders"
     
     def get_queryset(self):
-        return Order.objects.filter(team=self.request.user.userprofile.active_team).all()
+        return Order.objects.filter(team=self.request.user.userprofile.active_team).annotate(
+            total_price=Sum(F('orderitems__quantity') * F('orderitems__product__price'))
+        ).all()
     
 class OrderDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
     model = Order
@@ -64,6 +68,12 @@ class OrderDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
         context["add_comment_form"] = AddOrderCommentForm
         context["add_file_form"] = AddOrderFileForm
         return context
+    
+    def get_queryset(self):
+        return super().get_queryset().annotate(
+            total_price=Sum(F('orderitems__quantity') * F('orderitems__product__price'))
+        )
+    
     
 class OrderUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateView):
     model = Order

@@ -31,13 +31,13 @@
 			<p class="card-text"><strong>Products:</strong>
 				<ul>
 					{% for item in order.orderitems_set.all %}
-					<li>{{ item.product.name }} × {{ item.quantity }}</li>
+						<li><a href={{ item.product.get_absolute_url }}>{{ item.product.name }}</a> × {{ item.quantity }}</li>
 					{% empty %}
 					<li>No products</li>
 					{% endfor %}
 				</ul>
 			</p>
-
+			<p class="card-text"><strong>Total Price:</strong> {{ order.total_price|floatformat:2 }}$</p>
 			<p class="card-text"><strong>Created At:</strong> {{ order.created_at }}</p>
 			<p class="card-text"><strong>Updated At:</strong> {{ order.updated_at }}</p>
 		</div>

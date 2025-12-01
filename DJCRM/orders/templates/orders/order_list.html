@@ -18,6 +18,7 @@
 				<th>Team</th>
 				<th>Created By</th>
 				<th>Products</th>
+				<th>Total Price</th>
 				<th>Created At</th>
 				<th>Updated At</th>
 			</tr>
@@ -48,9 +49,12 @@
 				<td>{{ order.created_by.username }}</td>
 				<td>
 					{% for item in order.orderitems_set.all %}
-						{{ item.product.name }} (×{{ item.quantity }}){% if not forloop.last %}, {% endif %}
+						{{ item.product.name }} (×{{ item.quantity }}){% if not forloop.last %}<br/>{% endif %}
 					{% endfor %}
 				</td>
+				{% with forloop.counter as index %}
+				<td>{{ order.total_price|floatformat:2 }}$</td>
+				{% endwith %}
 				<td>{{ order.created_at }}</td>
 				<td>{{ order.updated_at }}</td>
 			</tr>
