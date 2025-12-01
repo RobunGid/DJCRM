@@ -11,7 +11,7 @@ class OrderForm(forms.ModelForm):
             "status": forms.Select(attrs={"class": "form-select"}),
         }
 
-OrderItemsFormSet = forms.inlineformset_factory(
+OrderItemsCreateFormSet = forms.inlineformset_factory(
     Order, OrderItems,
     fields=["product", "quantity"],
     can_delete=False,
@@ -20,6 +20,17 @@ OrderItemsFormSet = forms.inlineformset_factory(
         "quantity": forms.NumberInput(attrs={"class": "form-select w-50", "required": True}), 
             },
     extra=1
+)
+
+OrderItemsUpdateFormSet = forms.inlineformset_factory(
+    Order, OrderItems,
+    fields=["product", "quantity"],
+    can_delete=False,
+    widgets={
+        "product": forms.Select(attrs={"class": "form-select", "required": True}), 
+        "quantity": forms.NumberInput(attrs={"class": "form-select w-50", "required": True}), 
+            },
+    extra=0
 )
 
 class AddOrderCommentForm(forms.ModelForm):

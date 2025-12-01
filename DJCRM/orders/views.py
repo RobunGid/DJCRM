@@ -8,11 +8,10 @@ from django.views.generic import CreateView, DeleteView, ListView, DetailView, U
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 from django.db.models import Sum, F
-from django.db.models.functions import Round
 
 from core.utils import DataMixin
 from orders.models import Order, OrderComment, OrderFile
-from orders.forms import AddOrderCommentForm, AddOrderFileForm, OrderForm, OrderItemsFormSet
+from orders.forms import AddOrderCommentForm, AddOrderFileForm, OrderForm, OrderItemsCreateFormSet, OrderItemsUpdateFormSet
 
 class OrderCreatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView):
     form_class = OrderForm
@@ -28,9 +27,9 @@ class OrderCreatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, Create
         context["header_title"] = "Create Order"
         context["allow_to_add"] = self.request.user.userprofile.active_team.orders.all().count() < self.request.user.userprofile.active_team.plan.max_orders
         if self.request.POST:
-            context['order_items_formset'] = OrderItemsFormSet(self.request.POST)
+            context['order_items_formset'] = OrderItemsCreateFormSet(self.request.POST)
         else:
-            context['order_items_formset'] = OrderItemsFormSet()
+            context['order_items_formset'] = OrderItemsCreateFormSet()
         return context
     
     def form_valid(self, form):
@@ -74,10 +73,9 @@ class OrderDetailsPage(DataMixin, LoginRequiredMixin, DetailView):
             total_price=Sum(F('orderitems__quantity') * F('orderitems__product__price'))
         )
     
-    
 class OrderUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateView):
     model = Order
-    template_name = "orders/order_add.html"
+    template_name = "orders/order_create.html"
     form_class = OrderForm
     extra_context = {"button_text": "Update"}
     title = "Update Order"
@@ -87,8 +85,25 @@ class OrderUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, Update
         context = super().get_context_data(**kwargs)
         context["header_title"] = f"Edit Order - ID #{self.object.pk}"
         context["allow_to_add"] = True
+        if self.request.POST:
+            context['order_items_formset'] = OrderItemsUpdateFormSet(self.request.POST, instance=self.object)
+        else:
+            context['order_items_formset'] = OrderItemsUpdateFormSet(instance=self.object)
         return context
     
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data()
+        order_items_formset = context['order_items_formset']
+        if order_items_formset.is_valid():
+            print(order_items_formset)
+            order_items_formset.instance = self.object
+            for form in order_items_formset:
+                form.instance.order_id = self.object.pk
+                form.instance.save()
+            return redirect("orders:order_details", pk=self.object.pk)
+        return self.form_invalid(form)
+        
 class OrderDeletePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
     model = Order
     success_url = reverse_lazy("orders:order_list")

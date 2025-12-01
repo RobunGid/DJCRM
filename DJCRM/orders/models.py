@@ -35,7 +35,7 @@ class Order(models.Model):
     created_by = models.ForeignKey(User, related_name="orders", on_delete=models.CASCADE)
     
     def __str__(self):
-        return f'{self.pk}: {self.name}'
+        return f'{self.pk}: {self.status}'
     
     def get_absolute_url(self):
         return reverse("orders:order_details", kwargs={"pk": self.pk})
