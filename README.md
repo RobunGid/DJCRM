@@ -58,14 +58,14 @@ CRM using Django Framework
 	- [x] Product create
 	- [x] Product delete
 	- [x] Product update
-- [ ] CRUD with orders
+- [x] CRUD with orders
 	- [x] App
 	- [x] DB models
-	- [ ] Orders list
-	- [ ] Order details
-	- [ ] Order create
-	- [ ] Order delete
-	- [ ] Order update
+	- [x] Orders list
+	- [x] Order details
+	- [x] Order create
+	- [x] Order delete
+	- [x] Order update
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Chat with users
 - [ ] Deploy
