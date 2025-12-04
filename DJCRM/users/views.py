@@ -1,7 +1,8 @@
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import CreateView
+from django.contrib.auth import get_user_model
+from django.views.generic import CreateView, DetailView
 from django.contrib.auth.views import PasswordChangeView
 
 from users.forms import LoginUserForm, RegisterUserForm, UserPasswordChangeForm
@@ -30,14 +31,22 @@ class UserRegister(CreateView):
         
         return super().form_valid(form)
     
-    
-class UserProfile(LoginRequiredMixin, TemplateView):
+class UserProfileOwn(LoginRequiredMixin, TemplateView):
     template_name = "users/profile.html"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["user"] = self.request.user
         context["joined_teams"] = Team.objects.filter(members__in=[self.request.user]).all()
+        return context
+    
+class UserProfile(LoginRequiredMixin, DetailView):
+    model = get_user_model()
+    template_name = "users/profile.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["joined_teams"] = Team.objects.filter(members__in=[self.object]).all()
         return context
     
 class UserPasswordChange(PasswordChangeView):

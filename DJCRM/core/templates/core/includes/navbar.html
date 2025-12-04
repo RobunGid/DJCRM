@@ -78,7 +78,7 @@
 		{% endif %}
 		{% if request.user.is_authenticated %}
 		<li>
-		<a href="{% url "users:profile" %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}link-primary{% else %}link-secondary{% endif %}">
+		<a href="{% url "users:own_profile" %}" class="nav-link {% if request.resolver_match.url_name == 'own_profile' %}link-primary{% else %}link-secondary{% endif %}">
 			<img src="/static/icons/profile.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
 			Profile
 		</a>

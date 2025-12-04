@@ -17,6 +17,7 @@
 					</span>
 				{% endif %}
 				</h5>
+				<p class="text-secondary"><small>#{{ user.pk }}</small></p>
                 <p class="mb-1"><strong>Username:</strong> {{ user.username }}</p>
                 <p class="mb-1"><strong>Email:</strong> {{ user.email }}</p>
                 <p class="mb-1"><strong>Date Joined:</strong> {{ user.date_joined }}</p>
@@ -36,7 +37,7 @@
 				</button>
 			</form>
             <a href="{% url 'users:password_change' %}" class="btn btn-info">Change password</a>
-            <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">Back</a>
+            <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">Dashboard</a>
         </div>
     </div>
 </div>
