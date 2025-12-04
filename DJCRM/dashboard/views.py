@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
+from django.db.models import Sum, F
 
 from core.utils import DataMixin
+from orders.models import Order
 from leads.models import Lead
 from clients.models import Client
 
@@ -9,9 +11,13 @@ class Dashboard(DataMixin, LoginRequiredMixin, TemplateView):
     template_name = "dashboard/dashboard.html"
     def get_context_data(self, **kwargs):
         team = self.request.user.userprofile.active_team
+        orders = Order.objects.filter(team=team).order_by("-created_at").annotate(
+            total_price=Sum(F('orderitems__quantity') * F('orderitems__product__price'))
+        )[:5]
         clients = Client.objects.filter(team=team).order_by("-created_at")[:5]
         leads = Lead.objects.filter(team=team, converted_to_client=False).order_by("-created_at")[:5]
         context = super().get_context_data(**kwargs)
+        context["orders"] = orders
         context["leads"] = leads
         context["clients"] = clients
         return context

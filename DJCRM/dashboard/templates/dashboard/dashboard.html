@@ -3,6 +3,74 @@
 {% block content %}
 <div class="container mt-4 d-flex flex-column gap-4 table-responsive">
 
+	<div class="card">
+		{% if clients|length > 0 %}
+        <div class="card-header bg-success text-white">
+            Newest Orders
+        </div>
+        <div class="card-body p-0">
+            <table class="table mb-0 table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Team</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr class="position-relative">
+                        <td>
+							#{{ order.pk }}
+						<a href="{% url 'orders:order_details' order.pk %}" class="stretched-link" title="{{ order.status }}"></a>
+						</td>
+                        <td>{{ order.team.name }}</td>
+                        <td>{{ order.total_price|floatformat:2 }}$</td>
+                        <td>
+							<span class="badge
+							{% if order.status == order.Status.NEW %}bg-secondary
+							{% elif order.status == order.Status.PROCESSING %}bg-info
+							{% elif order.status == order.Status.PENDING_PAYMENT %}bg-warning
+							{% elif order.status == order.Status.PAID %}bg-success
+							{% elif order.status == order.Status.PENDING_SHIPMENT %}bg-warning
+							{% elif order.status == order.Status.SHIPPED %}bg-primary
+							{% elif order.status == order.Status.DELIVERED %}bg-success
+							{% elif order.status == order.Status.COMPLETED %}bg-success
+							{% elif order.status == order.Status.CANCELED %}bg-danger
+							{% elif order.status == order.Status.RETURNED %}bg-dark
+							{% endif %}
+								">{{ order.get_status_display }}
+							</span>
+			</td>
+                        <td>{{ order.created_at }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No orders</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+		{% else %}
+		<div class="card-body">
+		<p>No clients available. You can 
+			<a class="icon-link gap-0" href="{% url 'leads:lead_list' %}">
+			convert Lead to Client
+				<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.2rem" width="1.2rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M6 6v2h8.59L5 17.59 6.41 19 16 9.41V18h2V6z"></path></svg>
+			</a> 
+		or 
+			<a class="icon-link gap-0" href="{% url 'clients:client_add' %}">
+			create new Client
+				<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.2rem" width="1.2rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M6 6v2h8.59L5 17.59 6.41 19 16 9.41V18h2V6z"></path></svg>
+			</a> 
+		to get started</p>
+		</div>
+		{% endif %}
+    </div>
+
     <div class="card">
 		{% if leads|length > 0 %}
         <div class="card-header bg-primary text-white">
@@ -120,7 +188,7 @@
 		</div>
 		{% endif %}
     </div>
-
+	
 </div>
 
 {% endblock %}
