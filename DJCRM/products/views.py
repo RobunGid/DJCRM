@@ -2,17 +2,15 @@ from PIL import Image
 import csv
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, DetailView, TemplateView, UpdateView, View
-from django.contrib import messages
+from django.views.generic import CreateView, DeleteView, ListView, DetailView, UpdateView, View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 
 from core.utils import DataMixin
-from products.models import Product
+from products.models import Product, ProductComment, ProductFile
 from products.forms import AddProductForm, AddProductCommentForm, AddProductFileForm
-from clients.models import Client, ClientComment
 
 class ProductAddPage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, CreateView):
     form_class = AddProductForm
@@ -116,6 +114,26 @@ class ProductFileAddView(View):
             product_file.save()
 
         return redirect("products:product_details", pk=pk)
+   
+class ProductCommentDeleteView(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
+    model = ProductComment
+    success_message = "Product comment was deleted successfully"
+    
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy("products:product_details", kwargs={"pk": self.object.product.pk})
+    
+class ProductFileDeleteView(SuccessMessageMixin, DataMixin, LoginRequiredMixin, DeleteView):
+    model = ProductFile
+    success_message = "Product file was deleted successfully"
+    
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy("products:product_details", kwargs={"pk": self.object.product.pk})
     
 class ProductExportCSVView(View):
     def get(self, request, *args, **kwargs):
