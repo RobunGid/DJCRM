@@ -12,6 +12,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    "daphne",
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -124,3 +125,5 @@ EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
+
+ASGI_APPLICATION = 'DJCRM.asgi.application'
