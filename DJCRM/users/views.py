@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.views.generic import CreateView, DetailView
 from django.contrib.auth.views import PasswordChangeView
+from django.shortcuts import redirect
 
 from users.forms import LoginUserForm, RegisterUserForm, UserPasswordChangeForm
 from teams.models import Team
@@ -32,7 +33,7 @@ class UserRegister(CreateView):
         return super().form_valid(form)
     
 class UserProfileOwn(LoginRequiredMixin, TemplateView):
-    template_name = "users/profile.html"
+    template_name = "users/own_profile.html"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -48,6 +49,11 @@ class UserProfile(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["joined_teams"] = Team.objects.filter(members__in=[self.object]).all()
         return context
+    
+    def get(self, request, *args, **kwargs):
+        if self.request.user == self.get_object():
+            return redirect("users:own_profile")
+        return super().get(request, *args, **kwargs)
     
 class UserPasswordChange(PasswordChangeView):
     form_class = UserPasswordChangeForm

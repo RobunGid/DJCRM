@@ -29,7 +29,7 @@
                 <ul class="list-group">
                     {% for member in team.members.all %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ member.username }}
+                            <a href={% url "users:profile" member.pk %}>{{ member.username }}</a>
                             <span class="text-muted">{{ member.email }}</span>
                         </li>
                     {% empty %}
