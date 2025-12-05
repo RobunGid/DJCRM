@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.views.generic import CreateView, DetailView
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect
+from django.utils.safestring import SafeString
 
 from users.forms import LoginUserForm, RegisterUserForm, UserPasswordChangeForm
 from teams.models import Team
@@ -60,3 +61,13 @@ class UserPasswordChange(PasswordChangeView):
     success_url = reverse_lazy("users:password_change_done")
     template_name = "users/password_change_form.html"
     title = "Password change"
+    
+class ChatView(LoginRequiredMixin, TemplateView):
+    template_name = "users/chat.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["sender"] = SafeString({
+            "username": self.request.user.username
+        })
+        return context
+    

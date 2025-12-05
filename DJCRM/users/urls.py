@@ -25,4 +25,5 @@ urlpatterns = [
         success_url=reverse_lazy("users:password_reset_complete"),
         form_class=UserPasswordResetConfirmForm), name="password_reset_confirm"),
     path("password-reset/complete/", PasswordResetCompleteView.as_view(template_name="users/password_reset_complete.html"), name="password_reset_complete"),
+    path("chat/<int:user_pk>/", views.ChatView.as_view(), name="chat")
 ]

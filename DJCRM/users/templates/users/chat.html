@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            {% comment %} Chat with {{ chat_user.get_full_name|default:chat_user.username }} {% endcomment %}
+        </div>
+        <div class="card-body d-flex flex-column gap-3" style="height: 500px; overflow-y: auto;" id="id_chat_item_container">
+            {% for msg in messages %}
+                <div class="p-2 rounded {% if msg.sender == user %}bg-light text-end{% else %}bg-white{% endif %}">
+                    <strong>{{ msg.sender.username }}</strong><br>
+                    {{ msg.text }}<br>
+                    <small class="text-secondary">{{ msg.created_at }}</small>
+                </div>
+            {% empty %}
+                <p class="text-center text-secondary" id="no-messages">No messages yet</p>
+            {% endfor %}
+        </div>
+        <div class="card-footer">
+            <form method="post" class="d-flex gap-2">
+                {% csrf_token %}
+                <input type="text" name="text" class="form-control" placeholder="Write a message" id="chat-message-input">
+                <button class="btn btn-primary" type="submit" id="chat-message-submit">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+const chatSocket = new WebSocket(
+    'ws://' + window.location.host + '/ws/chat/'
+);
+
+const noMessagesElement = document.querySelector("#no-messages");
+
+chatSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data)
+    const container = document.getElementById('id_chat_item_container')
+    const div = document.createElement('div')
+	const formattedCreatedAt = new Date(data.created_at).toLocaleString("en-US")
+	div.innerHTML = `
+			<div class="d-flex justify-content-end gap-4">
+              <p class="small mb-1 text-muted">${ formattedCreatedAt }</p>
+              <p class="small mb-1">${ data.sender.username }</p>
+            </div>
+ 			<div class="d-flex flex-row justify-content-end mb-1 pt-1">
+              <div>
+                <p class="small p-2 me-3 mb-3 text-dark rounded-3 bg-info">${ data.message }</p>
+              </div>
+              <img src="/static/images/avatar.svg"
+                alt="avatar 1" style="width: 45px; height: 100%; filter: invert(100%);">
+            </div>	
+
+	`
+    container.appendChild(div);
+	noMessagesElement.hidden = true;
+}
+
+document.getElementById('chat-message-submit').onclick = function(e) {
+	e.preventDefault();
+    const input = document.getElementById('chat-message-input')
+	const data = {
+        message: input.value,
+		sender: {{ sender }},
+		created_at: new Date()
+    }
+    chatSocket.send(JSON.stringify(data))
+    input.value = ''
+}
+</script>
+
+{% endblock %}

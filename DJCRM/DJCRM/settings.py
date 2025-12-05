@@ -13,33 +13,38 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "daphne",
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'core',
-    'users',
-    'dashboard',
-    'leads',
-    'clients',
-    'teams',
-    'products',
-    'orders',
-    "unfold",  # before django.contrib.admin
-    "unfold.contrib.filters",  # optional, if special filters are needed
-    "unfold.contrib.forms",  # optional, if special form elements are needed
-    "unfold.contrib.inlines",  # optional, if special inlines are needed
-    "unfold.contrib.import_export",  # optional, if django-import-export package is used
-    "unfold.contrib.guardian",  # optional, if django-guardian package is used
-    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
-    "unfold.contrib.location_field",  # optional, if django-location-field package is used
-    "unfold.contrib.constance",  # optional, if django-constance package is used
-    'django.contrib.admin',
+
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
+    "unfold.contrib.import_export",
+    "unfold.contrib.guardian",
+    "unfold.contrib.simple_history",
+    "unfold.contrib.location_field",
+    "unfold.contrib.constance",
+
+    "core",
+    "users",
+    "dashboard",
+    "leads",
+    "clients",
+    "teams",
+    "products",
+    "orders",
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -47,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'DJCRM.urls'
 
@@ -104,7 +111,7 @@ STATICFILES_DIRS = [
 	BASE_DIR / 'static',
 ]
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -127,3 +134,9 @@ SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
 
 ASGI_APPLICATION = 'DJCRM.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
