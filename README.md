@@ -69,6 +69,9 @@ CRM using Django Framework
 - [ ] Chat with users
 	- [x] App
 	- [x] Simple template
-	- [ ] Models
+	- [x] Models
+	- [x] Saving messages in DB
+	- [ ] Send files in chat
+	- [ ] Team chat
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Deploy
