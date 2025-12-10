@@ -26,7 +26,7 @@
 
         </div>
         <div class="card-footer d-flex flex-row justify-content-end gap-2">
-            <a href="{% url 'users:chat' user.pk %}" class="btn btn-secondary">Chat</a>
+            <a href="{% url 'chat:chat' user.pk %}" class="btn btn-secondary">Chat</a>
             <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">Dashboard</a>
         </div>
     </div>
