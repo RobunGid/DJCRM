@@ -29,8 +29,8 @@
 </div>
 <script>
 const chatSocket = new WebSocket(
-    'ws://' + window.location.host + '/ws/chat/'
-);
+    'ws://' + window.location.host + '/ws/chat/' + {{ view.kwargs.user_pk }} + '/'
+)
 
 const noMessagesElement = document.querySelector("#no-messages");
 
@@ -75,8 +75,12 @@ document.getElementById('chat-message-submit').onclick = function(e) {
 	const data = {
         message: input.value,
 		sender: {{ sender }},
-		created_at: new Date()
+		created_at: new Date(),
+		receiver: {
+			pk:	{{ view.kwargs.user_pk }}
+		}
     }
+	console.log(data)
     chatSocket.send(JSON.stringify(data))
     input.value = ''
 }
