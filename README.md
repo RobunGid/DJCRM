@@ -47,6 +47,8 @@ CRM using Django Framework
 - [x] Export information
 - [x] Active team
 - [x] Team details
+- [x] Plans
+- [ ] Plans page
 - [x] Password Change
 - [x] Password Reset
 - [x] Info page
@@ -71,7 +73,7 @@ CRM using Django Framework
 	- [x] Simple template
 	- [x] Models
 	- [x] Saving messages in DB
-	- [ ] Send files in chat
+	- [x] Send files in chat
 	- [ ] Team chat
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Deploy
