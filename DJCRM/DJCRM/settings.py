@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
 
     "unfold",
     "unfold.contrib.filters",
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
     "teams",
     "products",
     "orders",
-    "chat"
+    "chat",
+    "plans"
 ]
 
 

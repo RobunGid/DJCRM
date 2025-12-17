@@ -1,0 +1,54 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+{% block content %}
+<div class="container py-4">
+	<h2 class="text-center mb-4">Choose Your Plan</h2>
+
+	<div class="row justify-content-center g-4">
+
+		{% for plan in plans %}
+		<div class="col-md-4">
+			<div class="card shadow h-100 border-primary">
+				<div class="card-header bg-primary text-white text-center">
+					<h4 class="my-2">{{ plan.name }}</h4>
+				</div>
+
+				<div class="card-body d-flex flex-column">
+					<h3 class="text-center mb-3">{{ plan.price }}€ / month</h3>
+					<p class="text-muted text-center">{{ plan.description|default:"No description" }}</p>
+					
+					<ul class="list-group list-group-flush my-3">
+						<li class="list-group-item d-flex justify-content-between">
+							<span>Max Leads</span><strong>{{ plan.max_leads|intcomma }}</strong>
+						</li>
+						<li class="list-group-item d-flex justify-content-between">
+							<span>Max Clients</span><strong>{{ plan.max_clients|intcomma }}</strong>
+						</li>
+						<li class="list-group-item d-flex justify-content-between">
+							<span>Max Products</span><strong>{{ plan.max_products|intcomma }}</strong>
+						</li>
+						<li class="list-group-item d-flex justify-content-between">
+							<span>Max Orders</span><strong>{{ plan.max_orders|intcomma }}</strong>
+						</li>
+						<li class="list-group-item d-flex justify-content-between">
+							<span>Max Order Items</span><strong>{{ plan.max_order_items|intcomma }}</strong>
+						</li>
+					</ul>
+
+					<div class="mt-auto text-center">
+						<a href="{% url 'plans:plan_details' plan.pk %}" class="btn btn-primary">View details</a>
+					</div>
+				</div>
+
+				<div class="card-footer text-muted text-center small">
+					Created {{ plan.created_at }}
+				</div>
+			</div>
+		</div>
+		{% empty %}
+		<p class="text-center text-muted">No plans available</p>
+		{% endfor %}
+
+	</div>
+</div>
+{% endblock %}

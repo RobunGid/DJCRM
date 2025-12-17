@@ -1,0 +1,43 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="container mt-4" style="max-width: 800px">
+	<div class="card shadow">
+		<div class="card-header bg-primary text-white text-center">
+			<h3 class="my-2">{{ plan.name }}</h3>
+		</div>
+
+		<div class="card-body">
+			<h2 class="text-center mb-3">{{ plan.price }}€ / month</h2>
+			<p class="text-muted text-center">{{ plan.description|default:"No description" }}</p>
+
+			<ul class="list-group list-group-flush mb-3">
+				<li class="list-group-item d-flex justify-content-between">
+					<span>Max Leads</span><strong>{{ plan.max_leads|intcomma }}</strong>
+				</li>
+				<li class="list-group-item d-flex justify-content-between">
+					<span>Max Clients</span><strong>{{ plan.max_clients|intcomma }}</strong>
+				</li>
+				<li class="list-group-item d-flex justify-content-between">
+					<span>Max Products</span><strong>{{ plan.max_products|intcomma }}</strong>
+				</li>
+				<li class="list-group-item d-flex justify-content-between">
+					<span>Max Orders</span><strong>{{ plan.max_orders|intcomma }}</strong>
+				</li>
+				<li class="list-group-item d-flex justify-content-between">
+					<span>Max Order Items</span><strong>{{ plan.max_order_items|intcomma }}</strong>
+				</li>
+			</ul>
+
+			<p class="text-center text-muted small">Created at: {{ plan.created_at }}</p>
+			<p class="text-center text-muted small">Updated at: {{ plan.updated_at }}</p>
+		</div>
+
+		<div class="card-footer text-end">
+			<a href="{% url 'plans:plan_list' %}" class="btn btn-secondary">Back to Plans</a>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
