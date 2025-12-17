@@ -75,5 +75,11 @@ CRM using Django Framework
 	- [x] Saving messages in DB
 	- [x] Send files in chat
 	- [ ] Team chat
+- [ ] Notifications
+	- [x] App
+	- [x] DB models
+	- [ ] Notification list
+	- [ ] Notification read
+	- [ ] Notification team invitations
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Deploy
