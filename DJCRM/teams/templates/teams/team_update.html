@@ -20,7 +20,7 @@
                 {% endfor %}
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">{{ button_text }}</button>
-                    <a href="{% url 'users:profile' %}" class="btn btn-secondary">Cancel</a>
+                    <a href="{% url 'users:profile' user.pk %}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
