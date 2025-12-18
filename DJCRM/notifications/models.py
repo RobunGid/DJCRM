@@ -6,6 +6,7 @@ class NotificationType(models.Model):
     name = models.CharField(max_length=127)
 
 class Notification(models.Model):
+    title = models.CharField(max_length=63)
     content = models.TextField(blank=True)
 
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="notifications", on_delete=models.CASCADE)

@@ -110,15 +110,16 @@
 				{% for n in all_notifications %}
 				<li class="mb-2 border-bottom pb-2">
 					<div class="dropdown-item d-flex flex-column position-relative" href="#">
-						<span class="{% if not n.is_read %}fw-bold{% endif %}">{{ n.content }}</span>
+						<span class="{% if not n.is_read %}fw-bold{% endif %}">{{ n.title }}</span>
+						<span>{{ n.content }}</span>
 						<small class="text-muted">{{ n.created_at|date:"d.m.Y H:i" }}</small>
 						{% csrf_token %}
 						{% if n.is_read %}
-						<button class="position-absolute btn btn-outline border-0" style="left: 80%;" disabled title="Read">
+						<button class="position-absolute btn btn-outline border-0" style="left: 80%; top: 0%;" disabled title="Read">
 							<img src="/static/icons/check.svg" width="24" height="24" class="d-block mx-auto" style="filter: invert(100%)">
 						</button>
 						{% else %}
-						<button class="position-absolute btn btn-outline" style="left: 80%;" title="Not read" data-notification-pk="{{ n.pk }}">
+						<button class="position-absolute btn btn-outline" style="left: 80%; top: 0%;" title="Not read" data-notification-pk="{{ n.pk }}">
 							<img src="/static/icons/check.svg" width="24" height="24" class="d-block mx-auto" style="filter: invert(100%)">
 						</button>
 						{% endif %}
