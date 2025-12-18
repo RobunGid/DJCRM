@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     "products",
     "orders",
     "chat",
-    "plans"
+    "plans",
+    "notifications"
 ]
 
 
@@ -70,7 +71,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'teams.context_processors.team'
+                'teams.context_processors.team',
+                'notifications.context_processors.notifications'
             ],
         },
     },

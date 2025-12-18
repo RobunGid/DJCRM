@@ -78,7 +78,7 @@ CRM using Django Framework
 - [ ] Notifications
 	- [x] App
 	- [x] DB models
-	- [ ] Notification list
+	- [x] Notification list
 	- [ ] Notification read
 	- [ ] Notification team invitations
 - [ ] Implement a payment solution / Monthly recurring payments

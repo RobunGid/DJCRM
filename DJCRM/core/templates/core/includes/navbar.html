@@ -90,6 +90,36 @@
 		</a>
 		</li>
 		{% endif %}
+		{% if request.user.is_authenticated %}
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle position-relative link-secondary"
+			href="#"
+			id="dropdownMenuButton1"
+			role="button"
+			data-bs-toggle="dropdown"
+			aria-expanded="false">
+				<img src="/static/icons/message.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%)">
+				Notifications
+				{% if notifications.count %}
+				<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="left: 80%; top: 20%">
+					{{ notifications.count }}
+				</span>
+				{% endif %}
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 320px" aria-labelledby="dropdownMenuButton1">
+				{% for n in notifications %}
+				<li class="mb-2 border-bottom pb-2">
+					<a class="dropdown-item d-flex flex-column" href="#">
+						<span class="{% if not n.is_read %}fw-bold{% endif %}">{{ n.content }}</span>
+						<small class="text-muted">{{ n.created_at|date:"d.m.Y H:i" }}</small>
+					</a>
+				</li>
+				{% empty %}
+				<li class="px-3 py-2 text-muted">No notifications</li>
+				{% endfor %}
+			</ul>
+		</li>
+		{% endif %}
 		{% if request.user.is_authenticated and active_team %}
 		<li>
 		<a href="{% url 'teams:team_details' active_team.pk %}" class="nav-link {% if request.resolver_match.url_name == 'team_details' %}link-primary{% else %}link-secondary{% endif %}">
