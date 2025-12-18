@@ -1,5 +1,14 @@
 def notifications(request):
-    notifications = None
+    read_notifications = None
+    unread_notifications = None
+    all_notifications = None
+    
     if request.user.is_authenticated:
-        notifications = request.user.notifications.all()
-    return {"notifications": notifications}
+        read_notifications = request.user.notifications.filter(is_read=True).all()
+        unread_notifications = request.user.notifications.filter(is_read=False).all()
+        all_notifications = request.user.notifications.all()
+    return {
+        "read_notifications": read_notifications,
+        "unread_notifications": unread_notifications,
+        "all_notifications": all_notifications,
+	}

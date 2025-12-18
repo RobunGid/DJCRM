@@ -32,6 +32,7 @@ urlpatterns = [
 	path('dashboard/products/', include('products.urls', namespace='products')),
 	path('dashboard/orders/', include('orders.urls', namespace='orders')),
 	path('dashboard/plans/', include('plans.urls', namespace='plans')),
+	path('dashboard/notifications/', include('notifications.urls', namespace='notifications')),
 	path('chat/', include('chat.urls', namespace='chat')),
     path('admin/', admin.site.urls),
 ]

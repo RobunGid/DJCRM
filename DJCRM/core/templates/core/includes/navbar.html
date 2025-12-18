@@ -100,19 +100,29 @@
 			aria-expanded="false">
 				<img src="/static/icons/message.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%)">
 				Notifications
-				{% if notifications.count %}
-				<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="left: 80%; top: 20%">
-					{{ notifications.count }}
+				{% if unread_notifications.count %}
+				<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="left: 80%; top: 20%" id="notif-badge">
+					{{ unread_notifications.count }}
 				</span>
 				{% endif %}
 			</a>
-			<ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 320px" aria-labelledby="dropdownMenuButton1">
-				{% for n in notifications %}
+			<ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 320px; max-height: 500px; overflow-y: auto;" aria-labelledby="dropdownMenuButton1">
+				{% for n in all_notifications %}
 				<li class="mb-2 border-bottom pb-2">
-					<a class="dropdown-item d-flex flex-column" href="#">
+					<div class="dropdown-item d-flex flex-column position-relative" href="#">
 						<span class="{% if not n.is_read %}fw-bold{% endif %}">{{ n.content }}</span>
 						<small class="text-muted">{{ n.created_at|date:"d.m.Y H:i" }}</small>
-					</a>
+						{% csrf_token %}
+						{% if n.is_read %}
+						<button class="position-absolute btn btn-outline border-0" style="left: 80%;" disabled title="Read">
+							<img src="/static/icons/check.svg" width="24" height="24" class="d-block mx-auto" style="filter: invert(100%)">
+						</button>
+						{% else %}
+						<button class="position-absolute btn btn-outline" style="left: 80%;" title="Not read" data-notification-pk="{{ n.pk }}">
+							<img src="/static/icons/check.svg" width="24" height="24" class="d-block mx-auto" style="filter: invert(100%)">
+						</button>
+						{% endif %}
+					</div>
 				</li>
 				{% empty %}
 				<li class="px-3 py-2 text-muted">No notifications</li>
@@ -142,3 +152,31 @@
 	</ul>
 	</div>
 </nav>
+<script>
+	const unreadNotifications = document.querySelectorAll("[data-notification-pk]");
+	unreadNotifications.forEach(btn => btn.addEventListener('click', async (event) => {
+		event.preventDefault();
+		const parent = btn.closest('.dropdown-item');
+		const text = parent.querySelector('span');
+		const data = new FormData();
+		data.append('csrfmiddlewaretoken', document.querySelector('input[name="csrfmiddlewaretoken"]').value);
+		data.append('is_read', true);
+		await fetch(`/dashboard/notifications/make-read/${btn.dataset.notificationPk}`, {method: "POST", body: data, credentials: "same-origin"});
+		btn.disabled = true;
+		btn.classList.add('border-0');
+		text.classList.remove('fw-bold');
+		btn.removeAttribute('data-notification-pk');
+		const badge = document.getElementById('notif-badge');
+		if (badge) {
+			let count = parseInt(badge.textContent.trim());
+			if (!isNaN(count) && count > 0) {
+				count -= 1;
+				if (count === 0) {
+					badge.remove();
+				} else {
+					badge.textContent = count;
+				}
+			}
+		}
+	}))
+</script>
