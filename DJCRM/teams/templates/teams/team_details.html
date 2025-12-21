@@ -44,6 +44,9 @@
 			{% if team.created_by == user %}
             <a href="{% url 'teams:team_update' team.pk %}" class="btn btn-info">Edit Team</a>
             {% endif %}
+			{% if team.created_by == user %}
+            <a href="{% url 'teams:create_invitation' team.pk %}" class="btn btn-info">Invite to Team</a>
+            {% endif %}
 			{% if team != user.userprofile.active_team %}
 			<form action="{% url 'teams:team_make_active' team.pk %}" method="POST">
 				{% csrf_token %}

@@ -1,0 +1,145 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4" style="max-width: 800px">
+	<div class="card shadow">
+		<div class="card-header bg-primary text-white">
+			Invite User to Team
+		</div>
+		<div class="card-body" id="card-body">
+
+			<form method="get" action="#" class="mb-4">
+				<div class="input-group">
+					<input type="text" name="q" class="form-control" placeholder="Search by name, email, or username" value="{{ request.GET.q|default:'' }}" id="user_search_input">
+				</div>
+			</form>
+
+			{% if users %}
+				<ul class="list-group">
+					{% for user in users %}
+					<li class="list-group-item d-flex align-items-center justify-content-between">
+						<div class="d-flex align-items-center gap-3">
+							<img src="{{ user.avatar_url|default:'/static/images/avatar.svg' }}" alt="Avatar" class="rounded-circle" width="50" height="50">
+							<div>
+								<h6 class="mb-0">{{ user.get_full_name|default:user.username }}</h6>
+								<small class="text-muted">{{ user.email }}</small>
+							</div>
+						</div>
+						<form method="post" action="{% url 'teams:team_invite' team.pk user.pk %}">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-outline-success btn-sm">
+								<img src="/static/icons/plus.svg" width="16" height="16" class="invite-button"> Invite
+							</button>
+						</form>
+					</li>
+					{% endfor %}
+				</ul>
+			{% elif request.GET.q %}
+				<p class="text-muted text-center">No users found for "{{ request.GET.q }}"</p>
+			{% else %}
+				<p class="text-muted text-center">Start typing to search users</p>
+			{% endif %}
+
+		</div>
+	</div>
+</div>
+<script>
+	function debounce(callback, delay) {
+		let timer
+		return function(event) {
+			clearTimeout(timer)
+			timer = setTimeout(() => {
+				callback(event);
+			}, delay)
+		}
+	}
+
+	const searchInputElement = document.querySelector("#user_search_input");
+	const usersListContainer = document.createElement("ul");
+	usersListContainer.className = "list-group mt-3";
+	const cardBody = document.querySelector("#card-body");
+	cardBody.appendChild(usersListContainer);
+
+	const renderUsers = (users) => {
+		usersListContainer.innerHTML = "";
+		if (users.length === 0) {
+			const p = document.createElement("p");
+			p.className = "text-muted text-center mt-2";
+			p.textContent = "No users found";
+			usersListContainer.appendChild(p);
+			return;
+		}
+
+		users.forEach(user => {
+			const li = document.createElement("li");
+			li.className = "list-group-item d-flex align-items-center justify-content-between";
+
+			const leftDiv = document.createElement("div");
+			leftDiv.className = "d-flex align-items-center gap-3";
+
+			const img = document.createElement("img");
+			img.src = user.avatar_url || "/static/images/avatar.svg";
+			img.alt = "Avatar";
+			img.className = "rounded-circle";
+			img.width = 50;
+			img.height = 50;
+
+			const infoDiv = document.createElement("div");
+			const nameH6 = document.createElement("h6");
+			nameH6.className = "mb-0";
+			nameH6.textContent = user.full_name || user.username;
+			const emailSmall = document.createElement("small");
+			emailSmall.className = "text-muted";
+			emailSmall.textContent = user.email;
+
+			infoDiv.appendChild(nameH6);
+			infoDiv.appendChild(emailSmall);
+
+			leftDiv.appendChild(img);
+			leftDiv.appendChild(infoDiv);
+
+			const form = document.createElement("form");
+			form.method = "post";
+			form.action = `/teams/${user.team_pk}/send_invite/${user.id}/`;
+
+			const csrfInput = document.createElement("input");
+			csrfInput.type = "hidden";
+			csrfInput.name = "csrfmiddlewaretoken";
+			csrfInput.value = document.querySelector("[name=csrfmiddlewaretoken]").value;
+			form.appendChild(csrfInput);
+
+			const btn = document.createElement("button");
+			btn.type = "submit";
+			btn.className = "btn btn-outline-success btn-sm";
+			btn.innerHTML = `<img src="/static/icons/plus.svg" width="16" height="16" class="invite-button"> Invite`;
+			form.appendChild(btn);
+
+			li.appendChild(leftDiv);
+			li.appendChild(form);
+
+			usersListContainer.appendChild(li);
+		});
+	}
+
+	const getUsers = async (event) => {
+		const value = event.target.value.trim();
+		if (!value) {
+			usersListContainer.innerHTML = "";
+			return;
+		}
+		try {
+			const response = await fetch(`/users/user_list/${encodeURIComponent(value)}`);
+			if (!response.ok) throw new Error("Network response was not ok");
+			const data = await response.json();
+			renderUsers(data);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	const debouncedGetUsers = debounce(getUsers, 300);
+
+	searchInputElement.addEventListener("input", debouncedGetUsers);
+</script>
+{% endblock %}

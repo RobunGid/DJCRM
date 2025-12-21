@@ -2,9 +2,11 @@ from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, View
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect
+from django.db.models import Q
+from django.http import JsonResponse
 
 from users.forms import LoginUserForm, RegisterUserForm, UserPasswordChangeForm
 from teams.models import Team
@@ -60,3 +62,16 @@ class UserPasswordChange(PasswordChangeView):
     success_url = reverse_lazy("users:password_change_done")
     template_name = "users/password_change_form.html"
     title = "Password change"
+
+User = get_user_model()
+
+class UserList(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        value = kwargs["value"]
+        users = User.objects.filter(
+			Q(first_name__contains=value) |
+			Q(last_name__contains=value) |
+			Q(username__contains=value) |
+			Q(email__contains=value)
+		).values("id", "first_name", "email", "last_name", "username")
+        return JsonResponse(list(users), safe=False)

@@ -2,3 +2,12 @@
 	box-sizing: border-box;
 	scrollbar-gutter: stable;
 }
+
+.invite-button {
+	filter: invert(24%) sepia(82%) saturate(3711%) hue-rotate(148deg) brightness(94%) contrast(80%);
+	transition: filter 300ms;
+} 
+
+.btn.btn-outline-success.btn-sm:hover .invite-button {
+	filter: invert(100%);
+}

@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView, DetailView, ListView, View
+from django.views.generic import UpdateView, DetailView, ListView, View, TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.contrib.auth import get_user_model
+from django.db.models import Q
 
 from core.utils import DataMixin
 from teams.models import Team
@@ -52,3 +54,26 @@ class TeamActiveView(DataMixin, LoginRequiredMixin, View):
         userprofile.save()
         
         return redirect("teams:team_details", pk=kwargs["pk"])
+    
+User = get_user_model()
+    
+class CreateInvitationView(LoginRequiredMixin, TemplateView):
+    template_name = "teams/create_invitation.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["team"] = Team.objects.get(pk=kwargs["pk"])
+        if "q" in self.request.GET:
+            value = self.request.GET["q"]
+            context["users"] = User.objects.filter(
+                Q(first_name__contains=value) |
+                Q(last_name__contains=value) |
+                Q(username__contains=value) |
+                Q(email__contains=value)
+            ).values("pk", "first_name", "email", "last_name", "username")
+        return context
+    
+    
+class TeamInviteView(View):
+    def post(self, request, *args, **kwargs):
+        ...
