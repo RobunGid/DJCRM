@@ -14,7 +14,6 @@
 					<input type="text" name="q" class="form-control" placeholder="Search by name, email, or username" value="{{ request.GET.q|default:'' }}" id="user_search_input">
 				</div>
 			</form>
-
 			{% if users %}
 				<ul class="list-group">
 					{% for user in users %}
@@ -26,6 +25,7 @@
 								<small class="text-muted">{{ user.email }}</small>
 							</div>
 						</div>
+						
 						<form method="post" action="{% url 'teams:team_invite' team.pk user.pk %}">
 							{% csrf_token %}
 							<button type="submit" class="btn btn-outline-success btn-sm">
@@ -101,7 +101,7 @@
 
 			const form = document.createElement("form");
 			form.method = "post";
-			form.action = `/teams/${user.team_pk}/send_invite/${user.id}/`;
+			form.action = `{% url 'teams:team_invite' team.pk user.id %}`;
 
 			const csrfInput = document.createElement("input");
 			csrfInput.type = "hidden";

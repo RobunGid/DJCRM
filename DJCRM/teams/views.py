@@ -5,10 +5,12 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.http import HttpResponse
 
 from core.utils import DataMixin
 from teams.models import Team
 from teams.forms import TeamUpdateForm
+from notifications.models import TeamInvitation
 
 class TeamUpdatePage(SuccessMessageMixin, DataMixin, LoginRequiredMixin, UpdateView):
     model = Team
@@ -76,4 +78,7 @@ class CreateInvitationView(LoginRequiredMixin, TemplateView):
     
 class TeamInviteView(View):
     def post(self, request, *args, **kwargs):
-        ...
+        team = Team.objects.get(pk=kwargs["team_pk"])
+        user = User.objects.get(pk=kwargs["user_pk"])
+        TeamInvitation.objects.create(team=team, receiver=user)
+        return HttpResponse({"status": "success"})

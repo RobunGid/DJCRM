@@ -131,23 +131,64 @@
 			</ul>
 		</li>
 		{% endif %}
+		{% if request.user.is_authenticated %}
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle position-relative link-secondary"
+			href="#"
+			id="teamInvDropdown"
+			role="button"
+			data-bs-toggle="dropdown"
+			aria-expanded="false">
+				<img src="/static/icons/team.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%)">
+				Invites
+				{% if unread_invites %}
+				<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="left: 80%; top: 20%" id="inv-badge">
+					{{ unread_team_invitations }}
+				</span>
+				{% endif %}
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 320px; max-height: 500px; overflow-y: auto;" aria-labelledby="teamInvDropdown">
+				{% for inv in all_team_invitations %}
+				<li class="mb-2 border-bottom pb-2">
+					<div class="dropdown-item d-flex flex-column position-relative">
+						<span class="{% if inv.status == 'NOT_READ' %}fw-bold{% endif %}">Team: {{ inv.team.name }}</span>
+						<small class="text-muted">{{ inv.created_at|date:"d.m.Y H:i" }}</small>
+						{% csrf_token %}
+						{% if inv.status == "NOT_READ" %}
+						<button class="position-absolute btn btn-outline" style="left: 80%; top: 0%;" data-inv="{{ inv.pk }}" data-action="READ">
+							R
+						</button>
+						{% endif %}
+						{% if inv.status in "NOT_READ READ" %}
+						<button class="btn btn-success mt-2" data-inv="{{ inv.pk }}" data-action="ACCEPTED">Accept</button>
+						<button class="btn btn-danger mt-2" data-inv="{{ inv.pk }}" data-action="DECLINED">Decline</button>
+						{% endif %}
+					</div>
+				</li>
+				{% empty %}
+				<li class="px-3 py-2 text-muted">No invites</li>
+				{% endfor %}
+			</ul>
+		</li>
+		{% endif %}
+
 		{% if request.user.is_authenticated and active_team %}
 		<li>
-		<a href="{% url 'teams:team_details' active_team.pk %}" class="nav-link {% if request.resolver_match.url_name == 'team_details' %}link-primary{% else %}link-secondary{% endif %}">
-			<img src="/static/icons/team.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
-			{{ active_team.name }}
-		</a>
+			<a href="{% url 'teams:team_details' active_team.pk %}" class="nav-link {% if request.resolver_match.url_name == 'team_details' %}link-primary{% else %}link-secondary{% endif %}">
+				<img src="/static/icons/team.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+				{{ active_team.name }}
+			</a>
 		</li>
 		{% endif %}
 		{% if request.user.is_authenticated %}
 		<li>
-		<form method="POST" action="{% url 'users:logout' %}">
-			{% csrf_token  %}
-			<button class="nav-link link-secondary">
-			<img src="/static/icons/logout.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
-			Logout
-			</button>
-		</form>
+			<form method="POST" action="{% url 'users:logout' %}">
+				{% csrf_token  %}
+				<button class="nav-link link-secondary">
+				<img src="/static/icons/logout.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%);">
+				Logout
+				</button>
+			</form>
 		</li>
 		{% endif %}
 	</ul>
