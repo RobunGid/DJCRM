@@ -100,14 +100,14 @@
 			aria-expanded="false">
 				<img src="/static/icons/message.svg" width="24" height="24" class="d-block mx-auto mb-1" style="filter: invert(100%)">
 				Notifications
-				{% if unread_notifications.count %}
+				{% if unread_messages.count %}
 				<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="left: 80%; top: 20%" id="notif-badge">
-					{{ unread_notifications.count }}
+					{{ unread_messages.count }}
 				</span>
 				{% endif %}
 			</a>
 			<ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 320px; max-height: 500px; overflow-y: auto;" aria-labelledby="dropdownMenuButton1">
-				{% for n in all_notifications %}
+				{% for n in all_messages %}
 				<li class="mb-2 border-bottom pb-2">
 					<div class="dropdown-item d-flex flex-column position-relative" href="#">
 						<span class="{% if not n.is_read %}fw-bold{% endif %}">{{ n.title }}</span>
@@ -126,7 +126,7 @@
 					</div>
 				</li>
 				{% empty %}
-				<li class="px-3 py-2 text-muted">No notifications</li>
+				<li class="px-3 py-2 text-muted">No messages</li>
 				{% endfor %}
 			</ul>
 		</li>
@@ -159,9 +159,20 @@
 							R
 						</button>
 						{% endif %}
+						{% if inv.status not in "NOT_READ READ" %}
+						<span class="badge
+						{% if inv.status == 'ACCEPTED' %}bg-success
+						{% elif inv.status == 'DECLINED' %}bg-danger
+						{% elif inv.status == 'EXPIRED' %}bg-dark
+						{% elif inv.status == 'CANCELED' %}bg-secondary
+						{% endif %}
+						">
+						{{ inv.get_status_display }}
+						</span>
+						{% endif %}
 						{% if inv.status in "NOT_READ READ" %}
-						<button class="btn btn-success mt-2" data-inv="{{ inv.pk }}" data-action="ACCEPTED">Accept</button>
-						<button class="btn btn-danger mt-2" data-inv="{{ inv.pk }}" data-action="DECLINED">Decline</button>
+						<button class="btn btn-success mt-2" data-inv-pk="{{ inv.pk }}" data-action="ACCEPTED">Accept</button>
+						<button class="btn btn-danger mt-2" data-inv-pk="{{ inv.pk }}" data-action="DECLINED">Decline</button>
 						{% endif %}
 					</div>
 				</li>
@@ -200,10 +211,17 @@
 		event.preventDefault();
 		const parent = btn.closest('.dropdown-item');
 		const text = parent.querySelector('span');
+
 		const data = new FormData();
 		data.append('csrfmiddlewaretoken', document.querySelector('input[name="csrfmiddlewaretoken"]').value);
 		data.append('is_read', true);
-		await fetch(`/dashboard/notifications/make-read/${btn.dataset.notificationPk}`, {method: "POST", body: data, credentials: "same-origin"});
+
+		const url = "{% url 'notifications:message_update_status' 0 %}".replace("0", btn.dataset.notificationPk);
+
+		const response = await fetch(url, {method: "POST", body: data, credentials: "same-origin"});
+
+		if (!response.ok) return;
+
 		btn.disabled = true;
 		btn.classList.add('border-0');
 		text.classList.remove('fw-bold');
@@ -221,4 +239,43 @@
 			}
 		}
 	}))
+
+	const inviteButtons = document.querySelectorAll("[data-inv-pk]")
+	inviteButtons.forEach(btn => {
+		btn.addEventListener("click", async e => {
+			e.preventDefault()
+
+			const invPk = btn.dataset.invPk
+			const action = btn.dataset.action
+
+			const data = new FormData()
+			data.append("csrfmiddlewaretoken", document.querySelector('input[name="csrfmiddlewaretoken"]').value)
+			data.append("action", action)
+
+			const url = "{% url 'notifications:team_invitation_update_status' 0 %}".replace("0", invPk)
+
+			const response = await fetch(url, {
+				method: "POST",
+				body: data,
+				credentials: "same-origin"
+			})
+
+			if (!response.ok) return
+
+			const container = btn.closest(".dropdown-item")
+			container.innerHTML = `
+				<span class="fw-bold">${action === "ACCEPTED" ? "Invitation accepted" : "Invitation declined"}</span>
+			`
+
+			const badge = document.getElementById("inv-badge")
+			if (badge) {
+				let count = parseInt(badge.textContent.trim())
+				if (!isNaN(count) && count > 0) {
+					count -= 1
+					if (count === 0) badge.remove()
+					else badge.textContent = count
+				}
+			}
+		})
+	})
 </script>

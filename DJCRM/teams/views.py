@@ -75,7 +75,6 @@ class CreateInvitationView(LoginRequiredMixin, TemplateView):
             ).values("pk", "first_name", "email", "last_name", "username")
         return context
     
-    
 class TeamInviteView(View):
     def post(self, request, *args, **kwargs):
         team = Team.objects.get(pk=kwargs["team_pk"])

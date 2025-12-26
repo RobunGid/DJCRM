@@ -4,7 +4,7 @@ from django_enum import EnumField
 
 from teams.models import Team
 
-class Notification(models.Model):
+class Message(models.Model):
     class Status(models.TextChoices):
         NOT_READ = "NOT_READ", "Not read"
         READ = "READ", "Read"
@@ -14,7 +14,7 @@ class Notification(models.Model):
     title = models.CharField(max_length=63)
     content = models.TextField(blank=True)
 
-    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="notifications", on_delete=models.CASCADE)
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="messages", on_delete=models.CASCADE)
     status = EnumField(Status, null=False, blank=False, default=Status.NOT_READ)
     is_read = models.BooleanField()
     read_at = models.DateTimeField(auto_now=True, null=True, blank=True)
