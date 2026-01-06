@@ -1,0 +1,131 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            {{ team_name }} - Team Chat
+        </div>
+        <div class="card-body d-flex flex-column gap-3" style="height: 500px; overflow-y: auto;" id="id_chat_item_container">
+            {% for msg in chat_messages %}
+                {% if msg.sender == request.user %}
+				<div>
+					<div class="d-flex justify-content-end gap-4">
+						<p class="small mb-1 text-muted">{{ msg.created_at }}</p>
+						<p class="small mb-1">{{ msg.sender.username }}</p>
+					</div>
+					<div class="d-flex flex-row justify-content-end mb-1 pt-1 align-items-center">
+						<p class="d-block small mb-0 p-2 me-3 text-dark rounded-3 bg-info">{{ msg.text }}</p>
+						<img src="/static/images/avatar.svg"
+							alt="avatar 1" style="width: 45px; height: 100%; filter: invert(100%);">
+					</div>	
+				</div>	
+			{% else %} 
+				<div>
+					<div class="d-flex justify-content-start gap-4">
+						<p class="small mb-1">{{ msg.sender.username }}</p>
+						<p class="small mb-1 text-muted">{{ msg.created_at }}</p>
+					</div>
+					<div class="d-flex flex-row justify-content-start mb-1 pt-1 align-items-center">
+						<img src="/static/images/avatar.svg"
+							alt="avatar 1" style="width: 45px; height: 100%; filter: invert(100%);">
+						<p class="d-block small mb-0 p-2 ms-3 text-dark rounded-3 bg-secondary">{{ msg.text }}</p>
+					</div>	
+				</div>	
+			{% endif %}
+            {% empty %}
+                <p class="text-center text-secondary" id="no-messages">No messages yet</p>
+            {% endfor %}
+        </div>
+        <div class="card-footer">
+            <form method="post" class="d-flex gap-2" id="chat-message-form">
+                {% csrf_token %}
+                <input type="text" name="text" class="form-control" placeholder="Write a message" id="chat-message-input" required minlength="1">
+                <button class="btn btn-primary" type="submit" id="chat-message-submit">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+const dateFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  hour12: true
+}
+
+const dateFormatter = new Intl.DateTimeFormat('en-US', dateFormatOptions);
+
+const chatSocket = new WebSocket(
+    'ws://' + window.location.host + '/ws/team_chat/' + {{ view.kwargs.team_pk }} + '/'
+)
+
+const chatMessageForm = document.querySelector("#chat-message-form");
+const noMessagesElement = document.querySelector("#no-messages");
+const container = document.getElementById('id_chat_item_container');
+container.scrollTop = container.scrollHeight;
+
+
+chatSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    const div = document.createElement('div');
+	const formattedCreatedAt = dateFormatter.format(new Date(data.created_at)).replace('AM', 'a.m.').replace('PM', 'p.m.');
+	if (data.sender.username === "{{ sender.username }}") {
+		div.innerHTML = `
+			<div class="d-flex justify-content-end gap-4">
+				<p class="small mb-1 text-muted">${ formattedCreatedAt }</p>
+				<p class="small mb-1">${ data.sender.username }</p>
+			</div>
+			<div class="d-flex flex-row justify-content-end mb-1 pt-1 align-items-center">
+				<p class="d-block small mb-0 p-2 me-3 text-dark rounded-3 bg-info">${ data.message }</p>
+				<img src="/static/images/avatar.svg"
+					alt="avatar 1" style="width: 45px; height: 100%; filter: invert(100%);">
+			</div>	
+		`
+	} else {
+			div.innerHTML = `
+				<div class="d-flex justify-content-start gap-4">
+					<p class="small mb-1">${ data.sender.username }</p>
+					<p class="small mb-1 text-muted">${ formattedCreatedAt }</p>
+				</div>
+				<div class="d-flex flex-row justify-content-start mb-1 pt-1 align-items-center">
+					<img src="/static/images/avatar.svg"
+						alt="avatar 1" style="width: 45px; height: 100%; filter: invert(100%);">
+					<p class="d-block small mb-0 p-2 ms-3 text-dark rounded-3 bg-secondary">${ data.message }</p>
+				</div>	
+			`
+	}
+	const isAtEnd = Math.abs(container.scrollHeight-container.scrollTop-container.offsetHeight) <= 10;
+    container.appendChild(div);
+	if (isAtEnd) 
+		container.scrollTop = container.scrollHeight;
+	if (noMessagesElement)
+		noMessagesElement.hidden = true;
+}
+
+document.getElementById('chat-message-submit').onclick = function(e) {
+	e.preventDefault();
+	if (!chatMessageForm.checkValidity()) {
+		chatMessageForm.reportValidity();
+		return;
+	}
+    const input = document.getElementById('chat-message-input')
+	const data = {
+        message: input.value,
+		sender: {
+			username: "{{ sender }}"
+		},
+		team: {
+			pk:	{{ view.kwargs.team_pk }}
+		},
+		created_at: new Date(),
+    }
+    chatSocket.send(JSON.stringify(data))
+    input.value = ''
+}
+</script>
+
+{% endblock %}

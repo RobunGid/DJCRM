@@ -68,13 +68,13 @@ CRM using Django Framework
 	- [x] Order create
 	- [x] Order delete
 	- [x] Order update
-- [ ] Chat with users
+- [x] Chatting
 	- [x] App
 	- [x] Simple template
 	- [x] Models
 	- [x] Saving messages in DB
 	- [x] Send files in chat
-	- [ ] Team chat
+	- [x] Team chat
 - [x] Notifications
 	- [x] App
 	- [x] DB models

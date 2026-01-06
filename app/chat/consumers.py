@@ -1,4 +1,5 @@
 import json
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
@@ -67,8 +68,9 @@ class ChatConsumerPersonal(AsyncWebsocketConsumer):
     
 class ChatConsumerTeam(AsyncWebsocketConsumer):
     async def connect(self):
-        self.team = self.scope["team"]
-        self.room_name = self.get_room_name(self.team.id)
+        self.user = self.scope["user"]
+        self.team_id = self.scope['url_route']['kwargs']['team_pk']
+        self.room_name = self.get_room_name(self.team_id)
         self.room_group_name = f"chat_{self.room_name}"
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -85,13 +87,17 @@ class ChatConsumerTeam(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+        team = text_data_json['team']
         created_at = text_data_json['created_at'] 
         from chat.models import Message
+        from teams.models import Team
+        db_team = await database_sync_to_async(Team.objects.get)(pk=team["pk"])
         sender = self.user
         await database_sync_to_async(Message.objects.create)(
             sender=sender,
             text=message,
-            created_at=created_at
+            created_at=created_at,
+            team=db_team
             )
 
         await self.channel_layer.group_send(
@@ -104,6 +110,9 @@ class ChatConsumerTeam(AsyncWebsocketConsumer):
                     "pk": self.user.pk
                 },
                 'created_at': created_at, 
+                'team': {
+					"pk": team["pk"]
+				}
             }
         )
 
@@ -112,6 +121,7 @@ class ChatConsumerTeam(AsyncWebsocketConsumer):
             'message': event['message'],
             'sender': event['sender'],
             'created_at': event['created_at'],
+            'team': event['team'],
         }))
 
     def get_room_name(self, team_id):

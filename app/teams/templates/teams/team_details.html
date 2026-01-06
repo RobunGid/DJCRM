@@ -41,6 +41,7 @@
         </div>
 
         <div class="card-footer d-flex justify-content-end gap-2">
+            <a href="{% url 'chat:team_chat' team.pk %}" class="btn btn-success">Team Chat</a>
 			{% if team.created_by == user %}
             <a href="{% url 'teams:team_update' team.pk %}" class="btn btn-info">Edit Team</a>
             {% endif %}
