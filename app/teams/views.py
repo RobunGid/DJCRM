@@ -71,7 +71,8 @@ class CreateInvitationView(LoginRequiredMixin, TemplateView):
                 Q(first_name__contains=value) |
                 Q(last_name__contains=value) |
                 Q(username__contains=value) |
-                Q(email__contains=value)
+                Q(email__contains=value) &
+                Q(pk__ne=self.request.user.pk)
             ).values("pk", "first_name", "email", "last_name", "username")
         return context
     

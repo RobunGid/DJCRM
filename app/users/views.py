@@ -72,6 +72,7 @@ class UserList(LoginRequiredMixin, View):
 			Q(first_name__contains=value) |
 			Q(last_name__contains=value) |
 			Q(username__contains=value) |
-			Q(email__contains=value)
+			Q(email__contains=value),
+   			~Q(pk=self.request.user.pk)
 		).values("id", "first_name", "email", "last_name", "username")
         return JsonResponse(list(users), safe=False)

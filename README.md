@@ -81,7 +81,7 @@ CRM using Django Framework
 	- [x] Notification list
 	- [x] Notification read
 	- [x] Team invitations
-	- [ ] Create team invitation
+	- [x] Create team invitation
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Deploy
 	- [x] Dockerizing
