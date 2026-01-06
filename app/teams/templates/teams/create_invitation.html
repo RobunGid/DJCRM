@@ -26,7 +26,7 @@
 							</div>
 						</div>
 						
-						<form method="post" action="{% url 'teams:team_invite' team.pk user.pk %}">
+						<form method="post" action="{% url 'teams:team_invite' team.pk user.pk %}" data-invite-team-pk="{{ team.pk }}" data-invite-user-pk="{{ user.pk }}">
 							{% csrf_token %}
 							<button type="submit" class="btn btn-outline-success btn-sm">
 								<img src="/static/icons/plus.svg" width="16" height="16" class="invite-button"> Invite
@@ -141,5 +141,47 @@
 	const debouncedGetUsers = debounce(getUsers, 300);
 
 	searchInputElement.addEventListener("input", debouncedGetUsers);
+
+	document.addEventListener("submit", async function (event) {
+		const form = event.target;
+
+		if (!form.matches("form[data-invite-team-pk][data-invite-user-pk]")) return;
+
+		event.preventDefault();
+
+		const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]")?.value;
+		if (!csrfToken) {
+			console.error("CSRF token not found");
+			return;
+		}
+
+		const submitButton = form.querySelector("button[type='submit']");
+		submitButton.disabled = true;
+
+		try {
+			const response = await fetch(form.action, {
+				method: "POST",
+				headers: {
+					"X-CSRFToken": csrfToken,
+					"X-Requested-With": "XMLHttpRequest",
+				},
+				body: new FormData(form),
+			});
+
+			if (!response.ok) {
+				throw new Error("Invite request failed");
+			}
+
+			submitButton.classList.remove("btn-outline-success");
+			submitButton.classList.add("btn-outline-secondary");
+			submitButton.innerHTML = "Invited";
+
+		} catch (error) {
+			console.error(error);
+			submitButton.disabled = false;
+			alert("Ошибка при отправке приглашения");
+		}
+	});
+
 </script>
 {% endblock %}

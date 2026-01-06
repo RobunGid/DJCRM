@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import JsonResponse
 
 from core.utils import DataMixin
 from teams.models import Team
@@ -71,8 +71,8 @@ class CreateInvitationView(LoginRequiredMixin, TemplateView):
                 Q(first_name__contains=value) |
                 Q(last_name__contains=value) |
                 Q(username__contains=value) |
-                Q(email__contains=value) &
-                Q(pk__ne=self.request.user.pk)
+                Q(email__contains=value),
+                ~Q(pk=self.request.user.pk)
             ).values("pk", "first_name", "email", "last_name", "username")
         return context
     
@@ -81,4 +81,4 @@ class TeamInviteView(View):
         team = Team.objects.get(pk=kwargs["team_pk"])
         user = User.objects.get(pk=kwargs["user_pk"])
         TeamInvitation.objects.create(team=team, receiver=user)
-        return HttpResponse({"status": "success"})
+        return JsonResponse({"status": "success"})

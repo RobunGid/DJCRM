@@ -27,6 +27,7 @@ class UpdateInvitationStatus(LoginRequiredMixin, View):
         if status == TeamInvitation.Status.ACCEPTED:
             team = team_invitation.team
             team.members.add(request.user)
+            team.save()
         response = HttpResponse(status=302)
         response['Location'] = reverse_lazy("dashboard:dashboard")
         return response
