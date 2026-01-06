@@ -1,0 +1,50 @@
+[
+{
+  "model": "plans.plan",
+  "pk": 1,
+  "fields": {
+    "name": "Free Plan",
+    "price": "0.00",
+    "description": "Basic free plan with limited resources.",
+    "max_leads": 100,
+    "max_clients": 50,
+    "max_products": 50,
+    "max_orders": 50,
+    "max_order_items": 200,
+    "created_at": "2026-01-06T12:16:54.195Z",
+    "updated_at": "2026-01-06T12:16:54.195Z"
+  }
+},
+{
+  "model": "plans.plan",
+  "pk": 2,
+  "fields": {
+    "name": "Pro Plan",
+    "price": "49.99",
+    "description": "Professional plan for growing teams.",
+    "max_leads": 1000,
+    "max_clients": 500,
+    "max_products": 500,
+    "max_orders": 1000,
+    "max_order_items": 5000,
+    "created_at": "2026-01-06T12:16:54.195Z",
+    "updated_at": "2026-01-06T12:16:54.195Z"
+  }
+},
+{
+  "model": "plans.plan",
+  "pk": 3,
+  "fields": {
+    "name": "Enterprise Plan",
+    "price": "199.99",
+    "description": "Advanced plan with extended limits.",
+    "max_leads": 100000,
+    "max_clients": 50000,
+    "max_products": 50000,
+    "max_orders": 100000,
+    "max_order_items": 500000,
+    "created_at": "2026-01-06T12:16:54.195Z",
+    "updated_at": "2026-01-06T12:16:54.195Z"
+  }
+}
+]

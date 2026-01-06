@@ -48,7 +48,7 @@ CRM using Django Framework
 - [x] Active team
 - [x] Team details
 - [x] Plans
-- [ ] Plans page
+- [x] Plans page
 - [x] Password Change
 - [x] Password Reset
 - [x] Info page
@@ -80,6 +80,8 @@ CRM using Django Framework
 	- [x] DB models
 	- [x] Notification list
 	- [x] Notification read
-	- [ ] Notification team invitations
+	- [x] Notification team invitations
 - [ ] Implement a payment solution / Monthly recurring payments
 - [ ] Deploy
+	- [x] Dockerizing
+	- [x] Default plans

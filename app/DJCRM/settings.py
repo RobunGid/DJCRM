@@ -1,9 +1,15 @@
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY")
+
+env = os.getenv('APP_ENV', 'dev')
+if env == 'dev':
+	load_dotenv('../.env', override=True)
 
 DEBUG = True
 
@@ -77,10 +83,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'DJCRM.wsgi.application'
-
 DATABASES = {
     'default': {
-        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.sqlite3"),
         "NAME": os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
         "USER": os.environ.get("DB_USER", "user"),
         "PASSWORD": os.environ.get("DB_PASSWORD", "password"),

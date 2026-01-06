@@ -13,5 +13,6 @@ fi
 
 python manage.py flush --no-input
 python manage.py migrate
+python -Xutf8 manage.py loaddata plans_default.json
 
 exec "$@"
