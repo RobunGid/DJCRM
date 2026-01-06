@@ -1,11 +1,9 @@
 from pathlib import Path
-from dotenv import dotenv_values
-
-ENV_VALUES = dotenv_values("../.env")
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = ENV_VALUES["SECRET_KEY"]
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True
 
@@ -82,8 +80,12 @@ WSGI_APPLICATION = 'DJCRM.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("DB_USER", "user"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "password"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
     }
 }
 
@@ -113,7 +115,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-	BASE_DIR / 'static',
+    BASE_DIR / 'static',
 ]
 
 MEDIA_URL = '/media/'
@@ -128,10 +130,10 @@ LOGIN_URL = "users:login"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_HOST_PASSWORD = ENV_VALUES["EMAIL_HOST_PASSWORD"]
-EMAIL_HOST = ENV_VALUES["EMAIL_HOST"]
-EMAIL_PORT = ENV_VALUES["EMAIL_PORT"]
-EMAIL_HOST_USER = ENV_VALUES["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USEr")
 EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

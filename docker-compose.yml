@@ -1,0 +1,32 @@
+services:
+  app:
+    network_mode: "host"
+    build: ./app
+    command: daphne -p 8000 DJCRM.asgi:application
+    volumes:
+      - ./app/:/usr/src/app/
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env
+    depends_on:
+      - database
+  database:
+    network_mode: "host"
+    container_name: djcrm-database
+    image: postgres:17
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -D $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  postgres_data:
+    
